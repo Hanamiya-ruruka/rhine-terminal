@@ -1,0 +1,1177 @@
+/* Scoped UI from telemetry.html. */
+/* ==========================================================================
+   RHINE LAB UI DESIGN SYSTEM v1 — LOCKED ERROR STATE (--denied: 1)
+   ========================================================================== */
+#ui-timed {
+  --denied: 1;
+  --paper: #0b0b0c;
+  --ink: #e7e5e1;
+  --ink-bright: #f2f0eb;
+  --ink-inverse: #111214;
+  --card: #111214;
+  --tab: #18191c;
+  --mute: #8b8882;
+  --faint: #27282b;
+  --orange: #ff7b00;
+  --crimson: #b81c1c;
+  --carrier-black: #060607;
+  --hairline: rgba(255, 255, 255, 0.14);
+  --hairline-strong: rgba(255, 255, 255, 0.26);
+  --grid-line: rgba(255, 255, 255, 0.03);
+
+  --font-sans: var(--display);
+  --font-mono: var(--mono);
+  --font-zh: var(--cjk);
+}
+
+#ui-timed *, #ui-timed *::before, #ui-timed *::after {
+  box-sizing: border-box;
+  border-radius: 0;
+}
+
+#ui-timed {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: transparent;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Architectural Blueprint Micro-Grid */
+#ui-timed::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px, 32px 32px, 160px 160px, 160px 160px;
+  background-position: -1px -1px;
+}
+
+/* Top Hazard Stripe — 克制的深红黑工业封条，避免红橙双色抢戏 */
+#ui-timed .hazard-ribbon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--os-ribbon-h);
+  width: 100%;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(184, 28, 28, 0.62),
+    rgba(184, 28, 28, 0.62) 10px,
+    var(--carrier-black) 10px,
+    var(--carrier-black) 22px
+  );
+  z-index: 90;
+  pointer-events: none;
+}
+
+/* Typography Helpers */
+#ui-timed .micro {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  line-height: 1.25;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+#ui-timed .micro-bold {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  line-height: 1.25;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+#ui-timed .zh {
+  font-family: var(--font-zh);
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+/* Kickers & Badges */
+#ui-timed .kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--ink-bright);
+  color: var(--ink-inverse);
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+#ui-timed .kicker-black {
+  background-color: var(--carrier-black);
+  color: var(--ink);
+  border: 1px solid var(--hairline-strong);
+}
+
+#ui-timed .kicker-crimson {
+  background-color: var(--crimson);
+  color: var(--ink-bright);
+}
+
+#ui-timed .kicker-orange {
+  background-color: var(--orange);
+  color: var(--ink-inverse);
+}
+
+/* ==========================================================================
+   APP SHELL
+   ========================================================================== */
+#ui-timed .timed-layout {
+  position: relative;
+  min-height: 100dvh;
+  padding: var(--os-pad-top) var(--os-pad-x) 14px;
+}
+
+#ui-timed .terminal-shell {
+  position: absolute;
+  inset: auto var(--os-pad-x) 112px;
+  display: grid;
+  box-sizing: border-box;
+  height: 150px;
+  flex: none;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 6px;
+}
+
+/* ==========================================================================
+   1. TOP HEADER BAR
+   ========================================================================== */
+#ui-timed .top-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: 16px;
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 10px;
+}
+
+@media (max-width: 1120px) {
+  #ui-timed .top-header {
+    grid-template-columns: 1fr;
+  }
+}
+
+#ui-timed .header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#ui-timed .brand-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--mute);
+}
+
+#ui-timed .brand-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+#ui-timed .brand-title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: var(--os-brand-size);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink-bright);
+  line-height: 1.08;
+}
+
+#ui-timed .header-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+#ui-timed .warning-plaque {
+  background-color: var(--carrier-black);
+  border: 1px solid var(--hairline-strong);
+  padding: 6px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+#ui-timed .warning-plaque.fault-shake {
+  animation: tel-faultJolt 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+  border-color: var(--orange);
+}
+
+@keyframes tel-faultJolt {
+  0% { transform: translateX(0); }
+  18% { transform: translateX(-6px); }
+  38% { transform: translateX(5px); }
+  58% { transform: translateX(-3px); }
+  78% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+#ui-timed .warning-text {
+  font-family: var(--font-zh);
+  font-size: 11px;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+#ui-timed .header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+#ui-timed .clock-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  line-height: 0.92;
+}
+
+#ui-timed .clock-hm {
+  font-family: var(--display);
+  font-size: var(--os-clock-size);
+  font-weight: 300;
+  letter-spacing: -2px;
+  color: var(--ink-bright);
+}
+
+#ui-timed .clock-sec-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+#ui-timed .clock-battery-bar {
+  width: 22px;
+  height: 8px;
+  border: 1px solid var(--hairline-strong);
+  padding: 1px;
+  display: flex;
+  gap: 1px;
+}
+
+#ui-timed .clock-battery-bar span {
+  flex: 1;
+  background-color: rgba(231, 229, 225, 0.35);
+}
+
+#ui-timed .clock-battery-bar span.warn {
+  background-color: var(--crimson);
+}
+
+#ui-timed .clock-sec {
+  font-family: var(--font-mono);
+  font-size: var(--os-clock-sec);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+#ui-timed .clock-sub-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#ui-timed .segmented-status {
+  display: flex;
+  gap: 3px;
+}
+
+#ui-timed .segmented-status i {
+  display: block;
+  width: 13px;
+  height: 4px;
+  background-color: var(--faint);
+}
+
+#ui-timed .segmented-status i.on-orange {
+  background-color: rgba(231, 229, 225, 0.52);
+}
+
+#ui-timed .segmented-status i.on-crimson {
+  background-color: var(--crimson);
+}
+
+/* ==========================================================================
+   2. SYMMETRICAL 5-COLUMN ARCHITECTURE
+      [320px 3A Ledger] | [280px 3A Dial] | [1fr 3D Mobius] | [280px Live Dial] | [320px Live Ledger]
+   ========================================================================== */
+#ui-timed .timed-wings {
+  position: absolute;
+  inset: calc(50% - 106px) var(--os-pad-x) auto;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+#ui-timed .timed-wing {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  width: min(30vw, 590px);
+  max-height: min(580px, calc(100dvh - 450px));
+  gap: 12px;
+  pointer-events: auto;
+}
+
+#ui-timed .timed-wing > :is(.ledger-panel, .dial-panel) {
+  min-height: 0;
+  overflow: auto;
+}
+
+@media (max-width: 1380px), (max-height: 860px) {
+  #ui-timed .timed-wings {
+    position: relative;
+    inset: auto;
+    transform: none;
+    margin: clamp(260px, 48dvh, 520px) 0 16px;
+    gap: 12px;
+  }
+
+  #ui-timed .timed-wing {
+    width: calc(50% - 6px);
+    max-height: none;
+  }
+
+  #ui-timed .terminal-shell { position: static; }
+}
+
+@media (max-width: 760px) {
+  #ui-timed .timed-wings { flex-direction: column; }
+  #ui-timed .timed-wing { width: 100%; }
+}
+
+/* ==========================================================================
+   3. OUTER COLUMNS: HEAVY-INK LEDGER TABLES (TOP 5 BY CUMULATIVE HOURS)
+   ========================================================================== */
+#ui-timed .ledger-panel {
+  background-color: var(--card);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--lift-dark);
+  display: flex;
+  flex-direction: column;
+}
+
+#ui-timed .ledger-top-strip {
+  background-color: var(--carrier-black);
+  color: var(--ink);
+  padding: 8px 11px;
+  border-bottom: 1px solid var(--hairline-strong);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+#ui-timed .ledger-top-strip.single-accent {
+  border-top: 2px solid var(--ink-bright);
+}
+
+#ui-timed .ledger-top-strip.live-accent {
+  border-top: 2px solid var(--ink-bright);
+}
+
+#ui-timed .ledger-sub-strip {
+  padding: 6px 11px;
+  border-bottom: 1px solid var(--hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--mute);
+  background-color: rgba(6, 6, 7, 0.45);
+}
+
+#ui-timed .ledger-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#ui-timed .ledger-item {
+  padding: 9px 11px;
+  border-bottom: 1px solid var(--hairline);
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.14s ease;
+}
+
+#ui-timed .ledger-item:hover {
+  background-color: #17191c;
+}
+
+#ui-timed .ledger-item.active {
+  background-color: #1b1917;
+  box-shadow: inset 3px 0 0 var(--orange);
+}
+
+#ui-timed .ledger-item-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+#ui-timed .ledger-item-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+#ui-timed .ledger-kicker-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#ui-timed .ledger-game-title {
+  font-family: var(--font-zh);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-bright);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#ui-timed .ledger-hours-big {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-bright);
+  line-height: 1;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+#ui-timed .ledger-hours-big span {
+  font-size: 10px;
+  color: var(--mute);
+  margin-left: 1px;
+}
+
+/* 3 Severed / Segmented Progress Bars per Entry */
+#ui-timed .quota-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+#ui-timed .q-bar-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#ui-timed .q-bar-meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  color: var(--mute);
+  letter-spacing: 0.04em;
+}
+
+#ui-timed .q-bar-track {
+  height: 3.5px;
+  background-color: var(--faint);
+  position: relative;
+  display: flex;
+  gap: 2px;
+}
+
+#ui-timed .q-bar-seg {
+  height: 100%;
+  transition: width 0.28s ease;
+}
+
+#ui-timed .q-bar-seg.orange {
+  background-color: var(--orange);
+}
+
+#ui-timed .q-bar-seg.crimson {
+  background-color: var(--crimson);
+}
+
+#ui-timed .q-bar-seg.white {
+  background-color: var(--ink);
+}
+
+#ui-timed .ledger-quick-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin-top: 7px;
+  padding-top: 5px;
+  border-top: 1px dashed var(--hairline);
+}
+
+#ui-timed .micro-btn {
+  appearance: none;
+  border: 1px solid var(--hairline-strong);
+  background-color: var(--carrier-black);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: 700;
+  padding: 3px 6px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+#ui-timed .micro-btn:hover {
+  background-color: var(--orange);
+  color: var(--ink-inverse);
+  border-color: var(--orange);
+}
+
+#ui-timed .micro-btn.edit-btn:hover {
+  background-color: var(--ink-bright);
+  color: var(--ink-inverse);
+  border-color: var(--ink-bright);
+}
+
+#ui-timed .folded-badge-strip {
+  padding: 7px 11px;
+  background-color: var(--carrier-black);
+  border-top: 1px solid var(--hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--mute);
+}
+
+#ui-timed .ledger-footer-actions {
+  padding: 8px 11px;
+  border-top: 1px solid var(--hairline-strong);
+  background-color: var(--carrier-black);
+  display: flex;
+  gap: 8px;
+}
+
+#ui-timed .btn-inverted {
+  appearance: none;
+  border: 1px solid var(--ink-bright);
+  background-color: var(--ink-bright);
+  color: var(--ink-inverse);
+  font-family: var(--font-zh);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 7px 10px;
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+  transition: all 0.14s ease;
+}
+
+#ui-timed .btn-inverted:hover {
+  background-color: var(--orange);
+  border-color: var(--orange);
+  color: var(--ink-inverse);
+}
+
+#ui-timed .btn-secondary-dark {
+  appearance: none;
+  border: 1px solid var(--hairline-strong);
+  background-color: var(--tab);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 7px 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.14s ease;
+}
+
+#ui-timed .btn-secondary-dark:hover {
+  border-color: var(--crimson);
+  background-color: var(--crimson);
+  color: var(--ink-bright);
+}
+
+/* ==========================================================================
+   4. INNER COLUMNS: SYMMETRICAL POLAR STATISTICAL DIALS (3A & LIVE_OPS)
+   ========================================================================== */
+#ui-timed .dial-panel {
+  background-color: var(--card);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--lift-dark);
+  display: flex;
+  flex-direction: column;
+}
+
+#ui-timed .dial-header {
+  background-color: var(--carrier-black);
+  padding: 8px 11px;
+  border-bottom: 1px solid var(--hairline-strong);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#ui-timed .dial-stage-box {
+  padding: 14px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+#ui-timed .dial-svg-holder {
+  position: relative;
+  width: min(236px, 100%);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#ui-timed .polar-dial-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+#ui-timed .dial-arc {
+  cursor: pointer;
+  transition: stroke-width 0.16s ease, opacity 0.16s ease;
+}
+
+#ui-timed .dial-center-readout {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  text-align: center;
+  padding: 0 38px;
+}
+
+#ui-timed .dial-center-tag {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: 0.12em;
+  color: var(--mute);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  max-width: 128px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#ui-timed .dial-center-hours {
+  font-family: var(--font-mono);
+  font-size: 25px;
+  font-weight: 800;
+  color: var(--ink-bright);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+#ui-timed .dial-center-hours small {
+  font-size: var(--text-micro);
+  color: var(--mute);
+  margin-left: 2px;
+}
+
+#ui-timed .dial-center-badge {
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: 700;
+  color: var(--ink);
+  background-color: var(--carrier-black);
+  border: 1px solid var(--hairline-strong);
+  padding: 1px 6px;
+}
+
+/* Dial Legend Breakdown List */
+#ui-timed .dial-legend-list {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+}
+
+#ui-timed .dial-legend-row {
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 11px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+#ui-timed .dial-legend-row:last-child {
+  border-bottom: none;
+}
+
+#ui-timed .dial-legend-row:hover,
+#ui-timed .dial-legend-row.active {
+  background-color: #191b1f;
+}
+
+#ui-timed .dial-legend-row.active {
+  box-shadow: inset 2px 0 0 var(--orange);
+}
+
+#ui-timed .legend-swatch {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+}
+
+#ui-timed .legend-name {
+  font-family: var(--font-zh);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#ui-timed .legend-metrics {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-bright);
+  text-align: right;
+}
+
+#ui-timed .legend-metrics span {
+  color: var(--mute);
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+#ui-timed .dial-ranking {
+  padding: 4px 11px 6px;
+  border-top: 1px solid var(--hairline);
+}
+
+#ui-timed .dial-ranking-title {
+  margin: 0 0 2px;
+  font: 700 var(--text-micro)/14px var(--font-mono);
+  letter-spacing: 0.08em;
+  color: var(--mute);
+}
+
+#ui-timed .dial-rank-row {
+  display: grid;
+  grid-template-columns: 2ch minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  height: 14px;
+  font: 10px/14px var(--font-mono);
+  color: var(--mute);
+}
+
+#ui-timed .dial-rank-row:hover {
+  background-color: #191b1f;
+}
+
+#ui-timed .dial-rank-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-zh);
+  color: var(--ink);
+}
+
+@media (max-width: 760px) {
+  #ui-timed .dial-breakdown {
+    position: relative;
+    overflow-y: auto;
+  }
+
+  /* Keep the single-column panel's natural height while the ranking
+     follows the legend inside the same scroll area. */
+  #ui-timed .dial-ranking {
+    position: absolute;
+    inset: 100% 0 auto;
+  }
+}
+
+/* Dial Bottom Telemetry Readout */
+#ui-timed .dial-footer-stats {
+  background-color: var(--carrier-black);
+  border-top: 1px solid var(--hairline);
+  padding: 8px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#ui-timed .dial-footer-stats .dial-stat-line {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  color: var(--mute);
+}
+
+#ui-timed .dial-stat-line strong {
+  color: var(--ink);
+}
+
+/* ==========================================================================
+   5. CENTER COLUMN: UNOBSTRUCTED 3D MOBIUS STAGE + REJECTION LOG
+   ========================================================================== */
+#ui-timed .chamber-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#ui-timed .chamber-btn {
+  appearance: none;
+  border: 1px solid var(--hairline-strong);
+  background-color: var(--carrier-black);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+#ui-timed .chamber-btn:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+#ui-timed .chamber-btn.fault-btn {
+  border-color: var(--crimson);
+  color: #ff5c5c;
+}
+
+#ui-timed .chamber-btn.fault-btn:hover {
+  background-color: var(--crimson);
+  color: var(--ink-bright);
+}
+
+#ui-timed .chamber-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--hairline);
+  padding-top: 7px;
+  color: var(--mute);
+  z-index: 6;
+}
+
+/* Bottom Center: Fixed #060607 Realtime Rejection Audit Terminal */
+#ui-timed .rejection-log-box {
+  background-color: var(--carrier-black);
+  border: 1px solid var(--hairline-strong);
+  border-top: 1px solid var(--ink);
+  padding: 4px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+#ui-timed .log-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 3px;
+  gap: 8px;
+}
+
+#ui-timed .log-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 49px;
+  overflow-y: auto;
+}
+
+#ui-timed .log-row {
+  display: grid;
+  grid-template-columns: 68px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+#ui-timed .log-time {
+  color: var(--mute);
+}
+
+#ui-timed .log-msg {
+  overflow-wrap: anywhere;
+}
+
+#ui-timed .log-tag {
+  color: var(--orange);
+  font-weight: 700;
+}
+
+#ui-timed .log-tag.crit {
+  color: #ff4d4d;
+}
+
+/* ==========================================================================
+   6. BOTTOM STATUS RAIL
+   ========================================================================== */
+#ui-timed .bottom-rail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+  border-top: 1px solid var(--hairline);
+  color: var(--mute);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   7. ZERO-RADIUS MODAL FOR ADDING / EDITING ARCHIVES
+   ========================================================================== */
+#ui-timed .modal-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(6, 6, 7, 0.84);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+@media (min-width: 1381px) {
+  #ui-timed .modal-overlay {
+    justify-content: flex-end;
+    background-color: transparent;
+  }
+}
+
+#ui-timed .modal-overlay.open {
+  display: flex;
+}
+
+#ui-timed .modal-card {
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--card);
+  border: 1px solid var(--hairline-strong);
+  box-shadow: var(--lift-dark);
+  color: var(--ink);
+}
+
+#ui-timed .modal-top {
+  background-color: var(--carrier-black);
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#ui-timed .modal-form {
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#ui-timed .field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#ui-timed .field-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+#ui-timed .rl-input, #ui-timed .rl-select {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  background-color: var(--carrier-black);
+  border: 1px solid var(--hairline-strong);
+  color: var(--ink-bright);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  outline: none;
+}
+
+#ui-timed .rl-input:focus, #ui-timed .rl-select:focus {
+  border-color: var(--orange);
+}
+
+#ui-timed .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--hairline);
+}
+
+#ui-timed .track-entry {
+  padding: 0 5px;
+  line-height: 1;
+}
+
+#ui-timed .tracking-list {
+  max-height: min(48vh, 360px);
+  overflow-y: auto;
+}
+
+#ui-timed .tracking-row {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--hairline);
+  cursor: pointer;
+}
+
+#ui-timed .tracking-row input {
+  accent-color: var(--orange);
+}
+
+#ui-timed .tracking-title {
+  overflow-wrap: anywhere;
+}
+
+#ui-timed .tracking-status {
+  align-self: center;
+  margin-right: auto;
+}
+
+/* Give the header, wings and terminal separate rows on wide desktops. */
+@media (min-width: 1450px) and (min-height: 780px) {
+  #ui-timed .timed-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 8px;
+  }
+
+  #ui-timed .timed-wings {
+    position: static;
+    transform: none;
+    margin: 0;
+    flex: 1 0 auto;
+    align-items: center;
+  }
+
+  #ui-timed .timed-wing {
+    width: min(35%, 620px);
+    max-height: none;
+  }
+
+  #ui-timed .timed-wing > :is(.ledger-panel, .dial-panel) {
+    overflow: visible;
+  }
+
+  #ui-timed .header-right {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: end;
+    align-items: center;
+    column-gap: 12px;
+  }
+
+  #ui-timed .clock-sub-bar {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+
+  #ui-timed .ledger-item { padding-block: 4px; }
+  #ui-timed .ledger-item-head { margin-bottom: 3px; }
+  #ui-timed .ledger-footer-actions:empty { display: none; }
+
+  #ui-timed .quota-bars {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 0;
+    gap: 6px;
+  }
+
+  #ui-timed .q-bar-meta {
+    flex-direction: column;
+    letter-spacing: 0;
+    line-height: 12px;
+  }
+
+  #ui-timed .dial-stage-box { padding-block: 6px; }
+  #ui-timed .dial-svg-holder { width: min(224px, 100%); }
+  #ui-timed .dial-legend-row { padding-block: 3px; }
+
+  #ui-timed .terminal-shell {
+    position: static;
+    height: 138px;
+  }
+
+  #ui-timed .log-entries {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: max-content;
+    max-height: 32px;
+  }
+}
+
+@media (min-width: 1450px) and (min-height: 780px) and (max-height: 860px) {
+  #ui-timed .dial-svg-holder { width: min(204px, 100%); }
+  #ui-timed .timed-layout { gap: 6px; }
+}
+
+/* 高屏（带鱼屏/2K 以上）：终端上抬，给日志更大可视区；矮屏仍保持 138px 不溢出 */
+@media (min-width: 1450px) and (min-height: 900px) {
+  #ui-timed .terminal-shell {
+    height: 300px;
+  }
+  #ui-timed .log-entries {
+    max-height: 248px;
+  }
+}

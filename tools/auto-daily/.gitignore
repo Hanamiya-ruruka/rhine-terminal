@@ -1,0 +1,4 @@
+__pycache__/
+.selftest-*/
+data/
+logs/*.jsonl

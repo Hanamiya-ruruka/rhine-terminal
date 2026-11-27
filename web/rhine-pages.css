@@ -1,0 +1,255 @@
+.rhine-page,
+#rhine-shell > :is(.hud-tl, .hud-tr, .left-rail, .archive-inline, .hud-bl, .hud-br, .specimen-panel),
+#orbitCalloutLines {
+  transition: opacity 320ms var(--ease), translate 420ms var(--ease);
+}
+
+.rhine-page {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rhine-page[data-visible] { opacity: 1; }
+
+/* 切页机械错峰落位（用独立 translate 属性，绝不覆盖居中 transform） */
+#rhine-shell > :is(.left-rail, .hud-bl) {
+  translate: 0 0;
+  transition-delay: 45ms;
+}
+#rhine-shell > :is(.archive-inline, .hud-br) {
+  translate: 0 0;
+  transition-delay: 65ms;
+}
+#rhine-shell[data-daily-off] > :is(.left-rail, .hud-bl) {
+  translate: -10px 0;
+  transition-delay: 0ms;
+}
+#rhine-shell[data-daily-off] > :is(.archive-inline, .hud-br) {
+  translate: 10px 0;
+  transition-delay: 0ms;
+}
+
+#ui-daily .stage-console,
+#ui-timed :is(.timed-wing, .terminal-shell),
+#ui-ledger :is(.left-rail, .right-rail, .center-stage) {
+  transition: translate 420ms var(--ease), opacity 320ms var(--ease);
+}
+
+#ui-daily[data-visible] .stage-console { translate: 0 0; transition-delay: 85ms; }
+#ui-daily:not([data-visible]) .stage-console { translate: 0 10px; transition-delay: 0ms; }
+
+#ui-timed[data-visible] .timed-wing { translate: 0 0; transition-delay: 50ms; }
+#ui-timed[data-visible] .terminal-shell { translate: 0 0; transition-delay: 95ms; }
+#ui-timed:not([data-visible]) .timed-wing:first-child { translate: -12px 0; transition-delay: 0ms; }
+#ui-timed:not([data-visible]) .timed-wing:last-child { translate: 12px 0; transition-delay: 0ms; }
+#ui-timed:not([data-visible]) .terminal-shell { translate: 0 10px; transition-delay: 0ms; }
+
+#ui-ledger[data-visible] :is(.left-rail, .right-rail) { translate: 0 0; transition-delay: 50ms; }
+#ui-ledger[data-visible] .center-stage { translate: 0 0; transition-delay: 95ms; }
+#ui-ledger:not([data-visible]) .left-rail { translate: -12px 0; transition-delay: 0ms; }
+#ui-ledger:not([data-visible]) .right-rail { translate: 12px 0; transition-delay: 0ms; }
+#ui-ledger:not([data-visible]) .center-stage { translate: 0 10px; transition-delay: 0ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  #rhine-shell *,
+  .rhine-page * {
+    translate: none !important;
+    transition-delay: 0ms !important;
+  }
+}
+
+#ui-daily {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+}
+
+/* Keep the card bodies in the space between the fixed daily sidebars. */
+@media not all and (orientation: portrait) and (max-width: 1300px) {
+  #orbitNodes .orbit-node {
+    --orbit-card-width: clamp(120px, calc(50vw - 600px), 238px);
+    width: var(--orbit-card-width);
+  }
+
+  #orbitNodes .side-left {
+    left: max(var(--orbit-x), calc(50% - 50vw + 474px + var(--orbit-card-width)));
+  }
+
+  #orbitNodes .side-right {
+    left: min(var(--orbit-x), calc(50% + 50vw - 504px - var(--orbit-card-width)));
+  }
+}
+
+#rhine-shell[data-daily-off] > :is(.hud-tl, .hud-tr, .left-rail, .archive-inline, .hud-bl, .hud-br, .specimen-panel),
+#rhine-shell[data-daily-off] #orbitCalloutLines {
+  opacity: 0;
+}
+
+/* 暗色页无外引线，构造线层退到 3D 建模（z-index: 2）之后，绝不遮挡叶片 */
+#rhine-shell[data-daily-off] #mobiusSvg {
+  z-index: 1;
+}
+
+/* 三态专属 SVG 构造线：随 3D 形态平滑切换，暗色页自动切为冷白蓝图线 */
+#mobiusSvg .construct-guides {
+  opacity: 0;
+  transition: opacity 420ms var(--ease);
+}
+
+#rhine-shell:not([data-form]) #mobiusSvg .construct-guides--mobius,
+#rhine-shell[data-form="mobius"] #mobiusSvg .construct-guides--mobius,
+#rhine-shell[data-form="turbine"] #mobiusSvg .construct-guides--turbine,
+#rhine-shell[data-form="dna"] #mobiusSvg .construct-guides--dna {
+  opacity: 1;
+}
+
+#mobiusSvg .construct-guides--turbine line,
+#mobiusSvg .construct-guides--turbine circle,
+#mobiusSvg .construct-guides--turbine ellipse,
+#mobiusSvg .construct-guides--dna line,
+#mobiusSvg .construct-guides--dna circle,
+#mobiusSvg .construct-guides--dna path {
+  stroke: rgba(242, 240, 235, 0.16);
+  stroke-width: 1;
+}
+
+#mobiusSvg .construct-guides--turbine .svg-micro,
+#mobiusSvg .construct-guides--dna .svg-micro {
+  fill: rgba(242, 240, 235, 0.34);
+}
+
+#mobiusSvg .construct-guides--turbine .guide-tick-accent {
+  stroke: rgba(255, 123, 0, 0.85);
+  stroke-width: 1.5;
+}
+
+#mobiusSvg .construct-guides--turbine .guide-tick-bright {
+  stroke: rgba(242, 240, 235, 0.48);
+  stroke-width: 1.2;
+}
+
+#mobiusSvg .construct-guides--turbine .guide-polar-axis {
+  stroke: rgba(242, 240, 235, 0.34);
+  stroke-width: 1.1;
+}
+
+#mobiusSvg .construct-guides--turbine .guide-pole-node {
+  fill: var(--orange);
+  stroke: none;
+}
+
+#mobiusSvg .construct-guides--turbine .pivot-housing {
+  fill: #0b0b0c;
+  stroke: rgba(242, 240, 235, 0.72);
+  stroke-width: 1.2;
+}
+
+#mobiusSvg .construct-guides--turbine .pivot-pin {
+  fill: var(--orange);
+  stroke: none;
+}
+
+#mobiusSvg .construct-guides--turbine .core-reticle {
+  stroke: rgba(242, 240, 235, 0.42);
+  stroke-width: 1;
+}
+
+#mobiusSvg .construct-guides--turbine .core-singularity {
+  fill: var(--orange);
+  stroke: none;
+}
+
+#mobiusSvg .construct-guides--turbine .core-pulse-ring {
+  stroke: rgba(255, 123, 0, 0.55);
+  stroke-width: 1;
+  transform-origin: 600px 285px;
+  animation: armillaryCorePulse 3.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+@keyframes armillaryCorePulse {
+  0% { transform: scale(0.65); opacity: 0.78; }
+  75% { transform: scale(1.65); opacity: 0; }
+  100% { transform: scale(1.65); opacity: 0; }
+}
+
+#mobiusSvg .construct-guides--dna .guide-arc-accent,
+#mobiusSvg .construct-guides--dna .guide-tick-accent {
+  stroke: rgba(255, 123, 0, 0.65);
+  stroke-width: 1.2;
+}
+
+/* Palette from telemetry.html, scoped away from the ring renderer. */
+.rhine-page-denied {
+  --denied: 1;
+  --paper: #0b0b0c;
+  --ink: #e7e5e1;
+  --card: #111214;
+  --mute: #8b8882;
+  --faint: #27282b;
+  --orange: #ff7b00;
+  --hairline: rgb(255 255 255 / 14%);
+
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: clamp(16px, 3vw, 48px);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--cjk);
+}
+
+/* Source-over compositing gives the light and dark layers complementary weights. */
+#rhine-backdrop {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+#rhine-backdrop #micro-bg { background-color: var(--paper); }
+
+.rhine-backdrop-dark {
+  position: absolute;
+  inset: 0;
+  background: #0b0b0c;
+  opacity: 0;
+  transition: opacity 820ms cubic-bezier(0.22, 0.68, 0.2, 1);
+}
+
+/* 暗色页长按环心进度圈提亮为高反差信号橙，避免暗底发灰 */
+#rhine-shell[data-daily-off] #rhine-hold-ring {
+  stroke: var(--orange);
+  stroke-width: 1.6px;
+  filter: drop-shadow(0 0 6px rgba(255, 123, 0, 0.45));
+}
+
+#rhine-backdrop[data-dark] .rhine-backdrop-dark { opacity: 1; }
+
+#ui-timed {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow-y: auto;
+}
+
+#ui-timed :is(.top-header, .terminal-shell, .modal-overlay.open) { pointer-events: auto; }
+#ui-timed:has(.modal-overlay.open) { z-index: 7; }
+
+@media (orientation: portrait) and (max-width: 1300px) {
+  #ui-daily {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+
+  #ui-daily[data-dormant] { position: absolute; }
+
+  #rhine-shell[data-daily-dormant] > :is(.hud-tl, .hud-tr, .left-rail, .archive-inline, .hud-bl, .hud-br) {
+    position: absolute;
+    visibility: hidden;
+  }
+
+  #rhine-shell[data-daily-dormant] #stageCenter { min-height: calc(100dvh - 28px); }
+
+}

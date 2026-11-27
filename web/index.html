@@ -1,0 +1,1290 @@
+<!doctype html>
+<html lang="zh-CN" data-rh-variant="archive">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Personal G Rhine Terminal VER 2.0 · RHINE ARCHIVE TERMINAL</title>
+<link rel="icon" href='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 60"%3E%3Cpath d="M32 12 C14 12 14 48 32 48 C48 48 72 12 88 12 C106 12 106 48 88 48 C72 48 48 12 32 12 Z" fill="none" stroke="%23111214" stroke-width="8"/%3E%3C/svg%3E'>
+<link rel="stylesheet" href="rhine-tokens.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="rhine-rotate.css">
+<style>
+@keyframes boot-menu {from{opacity:0}to{opacity:1}}
+@keyframes boot-menu-lift {from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
+@keyframes boot-model {0%,21%{opacity:0}25.5%,100%{opacity:1}}
+@keyframes boot-fins {from{opacity:0}to{opacity:1}}
+@keyframes boot-title {
+  0%,63%{opacity:0;translate:-50% 10px}
+  70%,82%{opacity:1;translate:-50% 0}
+  92%,100%{opacity:0;translate:-50% -4px}
+}
+@keyframes boot-chrome {0%,80%{opacity:1}94%,100%{opacity:0}}
+@keyframes boot-veil-wipe {
+  0%,24.5%{clip-path:inset(0 0 0 0%)}
+  42%,100%{clip-path:inset(0 0 0 100%)}
+}
+@keyframes boot-blade-sweep {
+  0%,23.5%{left:-4px;opacity:0}
+  25%{left:0%;opacity:1}
+  41.5%{left:100%;opacity:1}
+  44%,100%{left:102%;opacity:0}
+}
+@keyframes boot-cipher-in {
+  0%{opacity:0;letter-spacing:.26em}
+  100%{opacity:1;letter-spacing:-.02em}
+}
+
+html[data-startup] #rhine-shell > :not(#stageCenter), html[data-startup] #micro-bg {animation:boot-menu .7s var(--ease) 4.75s both}
+html[data-startup] .stage-console {animation:boot-menu-lift .7s var(--ease) 4.85s both}
+html[data-startup] #orbitNodes,html[data-startup] #mobiusSvg {animation:boot-menu .65s var(--ease) 4.55s both}
+html[data-startup] #rhine-motif-slot {animation:boot-fins .2s both}
+html[data-startup] #rhine-motif-slot:not([data-rhine3d="ready"]) + #mobiusSvg {animation:boot-model 5.8s both}
+html[data-startup] #orbitCalloutLines {animation:boot-menu .6s var(--ease) 4.6s both}
+
+#boot-screen{
+  position:fixed;inset:0;z-index:10000;overflow:hidden;pointer-events:auto;cursor:pointer;
+  color:var(--ink);font-family:var(--mono);font-size:11px;font-variant-numeric:tabular-nums;
+}
+#boot-screen[hidden]{display:none}
+#boot-screen .boot-chrome{animation:boot-chrome 5.6s var(--ease) both}
+
+/* 黑曜石加密暗幕（1.4s 处被荧光绿光刃从左向右一刀切开，瞬间翻转为亮色档案纸） */
+#boot-veil{
+  position:absolute;inset:0;z-index:2;
+  background-color:#0b0b0c;
+  background-image:
+    linear-gradient(to right, rgba(242,240,235,0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(242,240,235,0.035) 1px, transparent 1px),
+    linear-gradient(to right, rgba(242,240,235,0.075) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(242,240,235,0.075) 1px, transparent 1px);
+  background-size:32px 32px,32px 32px,160px 160px,160px 160px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  animation:boot-veil-wipe 5.6s cubic-bezier(0.22,0.85,0.24,1) both;
+}
+#boot-veil::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:repeating-linear-gradient(-45deg,rgba(255,123,0,0.75),rgba(255,123,0,0.75) 10px,#060607 10px,#060607 20px);
+}
+#boot-veil .veil-tag{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#8b8882;
+}
+#boot-veil .veil-kicker{
+  padding:2px 8px;background:#ff7b00;color:#060607;font-weight:700;
+}
+#boot-veil .veil-cipher{
+  margin:0;font-family:var(--display);font-weight:800;
+  font-size:clamp(40px,6.4vw,88px);line-height:1;
+  color:#f2f0eb;text-transform:uppercase;
+  animation:boot-cipher-in .55s var(--ease) both;
+}
+#boot-veil .veil-cipher span{
+  color:transparent;-webkit-text-stroke:1.5px rgba(242,240,235,0.55);
+}
+#boot-veil .veil-auth{
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:#8b8882;
+}
+#boot-veil .veil-auth strong{color:#f2f0eb;transition:color 120ms ease}
+#boot-veil[data-unlocked] .veil-auth strong{color:var(--lime)}
+#boot-veil[data-unlocked] .veil-kicker{background:var(--lime);color:#060607}
+
+/* 莱茵荧光绿扫描光刃 */
+#boot-blade{
+  position:absolute;top:0;bottom:0;left:-4px;width:3px;z-index:5;pointer-events:none;
+  background:var(--lime);
+  box-shadow:-32px 0 48px rgba(185,228,50,0.34), 0 0 14px rgba(185,228,50,0.9);
+  animation:boot-blade-sweep 5.6s cubic-bezier(0.22,0.85,0.24,1) both;
+}
+
+/* 顶/底工程页眉页脚：随暗幕反转自动由白转黑 */
+#boot-screen header,#boot-screen footer{
+  position:absolute;left:var(--os-pad-x,24px);right:var(--os-pad-x,24px);z-index:4;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  letter-spacing:.14em;text-transform:uppercase;
+  transition:color 220ms ease, border-color 220ms ease;
+}
+#boot-screen header{
+  top:var(--os-pad-top,18px);padding-bottom:10px;
+  border-bottom:1px solid color-mix(in srgb,var(--ink) 16%,transparent);
+}
+#boot-screen header .boot-brand{display:flex;align-items:center;gap:10px}
+#boot-screen .boot-kicker{
+  display:inline-block;padding:2px 7px;background:var(--ink);color:var(--ink-inverse);
+  font-weight:700;font-size:10px;letter-spacing:.14em;
+  transition:background-color 220ms ease, color 220ms ease;
+}
+#boot-screen .boot-meta{font-size:10px;color:var(--mute)}
+#boot-screen .boot-phase{font-size:10px;font-weight:700;color:var(--ink)}
+
+#boot-screen .boot-corner{
+  position:absolute;width:14px;height:14px;z-index:4;pointer-events:none;
+  border-color:color-mix(in srgb,var(--ink) 38%,transparent);border-style:solid;
+  transition:border-color 220ms ease;
+}
+#boot-screen .boot-corner.tl{top:58px;left:var(--os-pad-x,24px);border-width:1px 0 0 1px}
+#boot-screen .boot-corner.tr{top:58px;right:var(--os-pad-x,24px);border-width:1px 1px 0 0}
+#boot-screen .boot-corner.bl{bottom:54px;left:var(--os-pad-x,24px);border-width:0 0 1px 1px}
+#boot-screen .boot-corner.br{bottom:54px;right:var(--os-pad-x,24px);border-width:0 1px 1px 0}
+
+#boot-screen footer{
+  bottom:18px;padding-top:10px;
+  border-top:1px solid color-mix(in srgb,var(--ink) 16%,transparent);
+}
+#boot-screen .boot-progress-wrap{display:flex;align-items:center;gap:12px;flex:1;max-width:420px}
+#boot-screen .boot-bar{
+  flex:1;height:2px;background:color-mix(in srgb,var(--ink) 16%,transparent);position:relative;overflow:hidden;
+}
+#boot-screen .boot-bar i{
+  display:block;height:100%;width:0%;background:var(--ink);border-right:10px solid var(--lime);
+}
+#boot-screen .boot-pct{font-size:10px;font-weight:700;min-width:34px;color:var(--ink)}
+#boot-screen .boot-skip{font-size:10px;color:var(--mute);letter-spacing:.16em}
+
+/* 暗幕覆盖阶段，页眉页脚切为反白高对比 */
+#boot-screen[data-dark-boot] header{border-bottom-color:rgba(242,240,235,0.18)}
+#boot-screen[data-dark-boot] footer{border-top-color:rgba(242,240,235,0.18)}
+#boot-screen[data-dark-boot] .boot-kicker{background:#f2f0eb;color:#0b0b0c}
+#boot-screen[data-dark-boot] .boot-phase,
+#boot-screen[data-dark-boot] .boot-pct{color:#f2f0eb}
+#boot-screen[data-dark-boot] .boot-corner{border-color:rgba(242,240,235,0.34)}
+#boot-screen[data-dark-boot] .boot-bar{background:rgba(242,240,235,0.16)}
+#boot-screen[data-dark-boot] .boot-bar i{background:#f2f0eb}
+
+#boot-name{
+  position:absolute;left:50%;top:67%;translate:-50% 0;z-index:3;text-align:center;white-space:nowrap;
+  animation:boot-title 5.6s var(--ease) both;
+}
+#boot-name .boot-access{
+  display:inline-flex;align-items:center;gap:10px;margin-bottom:8px;
+}
+#boot-name .boot-grant{
+  display:inline-block;padding:2px 8px;background:var(--ink);color:var(--ink-inverse);
+  border-left:4px solid var(--lime);font-family:var(--mono);font-size:10px;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;
+}
+#boot-name strong{
+  display:block;font-family:var(--display);font-weight:800;
+  font-size:clamp(24px,3.8vw,52px);line-height:1.08;letter-spacing:-.03em;color:var(--ink);
+}
+</style>
+<link rel="stylesheet" href="rhine-pages.css">
+<link rel="stylesheet" href="rhine-timed.css">
+<link rel="stylesheet" href="rhine-ledger.css">
+</head>
+<body class="rhine-ui">
+<div id="rhine-backdrop" aria-hidden="true">
+  <div id="micro-bg"></div>
+  <div class="rhine-backdrop-dark"></div>
+</div>
+
+<!-- 整屏莱茵生命档案观测终端 -->
+<main class="shell" id="rhine-shell">
+
+  <!-- 左上厂牌与放大版终端控制区 -->
+  <header class="hud-tl">
+    <div class="brand-stack">
+      <div class="brand-line-1">
+        <span class="rh-kicker">ARCHIVE OS</span>
+        <span class="rh-label">VER 2.0 // TERMINAL</span>
+      </div>
+      <h1 id="brandTitle">Rhine Daily Terminal</h1>
+    </div>
+    <div class="global-actions">
+      <button id="settingsButton" class="btn-solid" title="系统与游戏配置">设置</button>
+      <button id="importButton" class="secondary">导入</button>
+      <button id="exportButton" class="secondary">导出</button>
+      <button id="exitButton" class="danger">退出</button>
+    </div>
+  </header>
+
+  <!-- 左栏导轨（严格位于左上控制区下方，绝不重叠；内嵌常驻迷你归档遥测 + 展开按钮） -->
+  <aside class="left-rail" aria-label="系统导轨与档案遥测">
+    <div class="rail-track">
+      <div class="rail-cursor" id="railCursor"></div>
+    </div>
+
+    <div class="rail-meta">
+      <span class="rh-kicker">RHINE LAB LLC DATABASE</span>
+      <div class="rail-pools">
+        <div class="rc-head">
+          <span class="rh-label">版本剩余 // VERSION</span>
+          <span class="rh-label" id="railTelemetry">NODES // 00</span>
+        </div>
+        <div id="poolList" class="pool-list"></div>
+      </div>
+    </div>
+
+    <div class="rail-keys">
+      <div class="keys-col">
+        <div><span class="key-cap">CLICK</span> <span>NODE INSPECT</span></div>
+        <div><span class="key-cap">QUICK</span> <span>DONE / LAUNCH</span></div>
+        <div><span class="key-cap">ESC</span> <span>CLOSE PANEL</span></div>
+      </div>
+      <div class="tabs filter-tabs">
+        <button class="active" data-filter="all">全部游戏</button>
+        <button data-filter="todo">日常未完成</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 右上时钟 + 竖向放大版日常/周常/月卡统计看板 -->
+  <section class="hud-tr" aria-label="系统时钟与总览计数">
+    <div class="clock-block">
+      <div class="clock-main">
+        <span id="hudClockHM" class="hm">00:00</span>
+        <button id="audioToggle" class="rh-switch rh-switch--clock is-on" type="button" role="switch" aria-checked="true" aria-label="音效开关" title="音效开关">
+          <span class="rh-switch-track"><i class="rh-switch-knob"></i></span>
+          <span class="rh-switch-static" id="audioState">ON</span>
+        </button>
+        <div class="clock-side">
+          <span id="hudClockSec" class="sec">00</span>
+          <span id="hudClockDate" class="date">JST // 05:00 RESET</span>
+        </div>
+      </div>
+      <div class="step-nodes" id="stepNodes" aria-hidden="true">
+        <span class="node active"></span>
+        <span class="node"></span>
+        <span class="node"></span>
+        <span class="node"></span>
+        <span class="node"></span>
+        <span class="rh-label">TERMINAL / RHINE-NODE</span>
+      </div>
+    </div>
+
+    <!-- 竖向放大版统计面板 -->
+    <div class="telemetry-vertical">
+      <div class="tv-head">
+        <span class="rh-kicker">TELEMETRY</span>
+        <span class="rh-label">DAILY / WEEKLY</span>
+      </div>
+
+      <div class="tv-row">
+        <div class="tv-info">
+          <span class="tv-title">日常完成</span>
+          <span class="rh-label">DAILY OPERATIONS</span>
+        </div>
+        <div class="tv-num"><strong id="daily">0</strong><span> / <b id="daily-total">0</b></span></div>
+      </div>
+      <div class="tv-strip" id="strip-daily" aria-hidden="true"></div>
+
+      <div class="tv-row">
+        <div class="tv-info">
+          <span class="tv-title">周常完成</span>
+          <span class="rh-label">WEEKLY CYCLE</span>
+        </div>
+        <div class="tv-num"><strong id="weekly">0</strong><span> / <b id="weekly-total">0</b></span></div>
+      </div>
+      <div class="tv-strip" id="strip-weekly" aria-hidden="true"></div>
+
+      <div class="tv-row">
+        <div class="tv-info">
+          <span class="tv-title">月卡有效</span>
+          <span class="rh-label">ACTIVE PASS</span>
+        </div>
+        <div class="tv-num"><strong id="monthly">0</strong><span> 款</span></div>
+      </div>
+      <div class="tv-strip" id="strip-monthly" aria-hidden="true"></div>
+
+      <div class="progress-rail" title="今日日常总进度">
+        <div id="bar"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 中央主舞台：纯净莫比乌斯环 + 外围指向型游戏卡片 -->
+  <section class="stage-center" id="stageCenter" aria-label="莫比乌斯游戏观测环">
+    <!-- 外包 3D / 3DCSS 资产专用挂载槽 -->
+    <div id="rhine-motif-slot" class="motif-3d-slot" data-curve="gerono-lemniscate" data-aspect="2.1">
+      <div id="rhine-rotate-hit" aria-hidden="true"></div>
+      <svg id="rhine-hold-ring" viewBox="0 0 94 94" aria-hidden="true">
+        <circle cx="47" cy="47" r="46" pathLength="360" stroke-dasharray="360 360" transform="rotate(-90 47 47)"/>
+      </svg>
+    </div>
+
+    <!-- 构造几何莫比乌斯母题（保持本体纯净，不被游戏卡片压住） -->
+    <svg id="mobiusSvg" class="mobius-svg" viewBox="0 0 1200 570" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <g class="construct-guides construct-guides--mobius">
+        <line x1="600" y1="24" x2="600" y2="546" stroke-dasharray="2 6"/>
+        <line x1="80" y1="285" x2="1120" y2="285" stroke-dasharray="2 6"/>
+        <circle cx="385" cy="285" r="215" fill="none" stroke-dasharray="3 9"/>
+        <circle cx="815" cy="285" r="215" fill="none" stroke-dasharray="3 9"/>
+        <text x="608" y="42" class="svg-micro">AXIS // Y-00</text>
+        <text x="1032" y="278" class="svg-micro">AXIS // X-00</text>
+        <text x="150" y="534" class="svg-micro">CONSTRUCT // R=215 · SW=100 · LEN=2813.06</text>
+      </g>
+
+      <!-- 暗色时长页：莱茵浑天仪（23.5° 共线主极轴 + 万向节轴承节点 + 象限刻度环 + 核心奇点） -->
+      <g class="construct-guides construct-guides--turbine">
+        <!-- 基准十字线 -->
+        <line x1="600" y1="32" x2="600" y2="538" stroke-dasharray="2 6"/>
+        <line x1="355" y1="285" x2="845" y2="285" stroke-dasharray="2 6"/>
+        <!-- 外围象限刻度环 (r=186) 与内球壳投影环 (r=112)，留足画布呼吸边距 -->
+        <circle cx="600" cy="285" r="186" fill="none" stroke-dasharray="3 7"/>
+        <circle cx="600" cy="285" r="112" fill="none" stroke-dasharray="2 6" opacity="0.7"/>
+        <!-- 象限主刻度（0° / 90° / 180° / 270° 与 45° 副刻度） -->
+        <g>
+          <line x1="600" y1="91" x2="600" y2="107" class="guide-tick-bright"/>
+          <line x1="600" y1="463" x2="600" y2="479" class="guide-tick-bright"/>
+          <line x1="406" y1="285" x2="422" y2="285" class="guide-tick-bright"/>
+          <line x1="778" y1="285" x2="794" y2="285" class="guide-tick-bright"/>
+          <line x1="468" y1="153" x2="479" y2="164"/>
+          <line x1="732" y1="153" x2="721" y2="164"/>
+          <line x1="468" y1="417" x2="479" y2="406"/>
+          <line x1="732" y1="417" x2="721" y2="406"/>
+        </g>
+        <!-- 贯穿两极的主极轴（与外环 3D 法线 23.5° 严格共线 + 4 处万向节轴承 Pivot Nodes） -->
+        <g transform="rotate(23.5 600 285)">
+          <line x1="600" y1="68" x2="600" y2="502" class="guide-polar-axis"/>
+          <!-- 两极端点菱形 -->
+          <polygon points="600,62 605,68 600,74 595,68" class="guide-pole-node"/>
+          <polygon points="600,496 605,502 600,508 595,502" class="guide-pole-node"/>
+          <!-- 外环交汇处万向节轴承节点 (r=186 -> y=99 / y=471) -->
+          <g class="gimbal-pivot">
+            <circle cx="600" cy="99" r="6" class="pivot-housing"/>
+            <circle cx="600" cy="99" r="2.2" class="pivot-pin"/>
+            <line x1="590" y1="99" x2="610" y2="99" class="guide-tick-bright"/>
+            <circle cx="600" cy="471" r="6" class="pivot-housing"/>
+            <circle cx="600" cy="471" r="2.2" class="pivot-pin"/>
+            <line x1="590" y1="471" x2="610" y2="471" class="guide-tick-bright"/>
+          </g>
+          <!-- 内环交汇处万向节轴承节点 (r=112 -> y=173 / y=397) -->
+          <g class="gimbal-pivot">
+            <circle cx="600" cy="173" r="4.8" class="pivot-housing"/>
+            <circle cx="600" cy="173" r="1.8" class="pivot-pin"/>
+            <line x1="592" y1="173" x2="608" y2="173" class="guide-tick-accent"/>
+            <circle cx="600" cy="397" r="4.8" class="pivot-housing"/>
+            <circle cx="600" cy="397" r="1.8" class="pivot-pin"/>
+            <line x1="592" y1="397" x2="608" y2="397" class="guide-tick-accent"/>
+          </g>
+        </g>
+        <!-- 核心观测奇点（微缩星体 + 脉冲准星） -->
+        <g class="armillary-core">
+          <circle cx="600" cy="285" r="22" fill="none" class="core-pulse-ring"/>
+          <circle cx="600" cy="285" r="13" fill="none" stroke-dasharray="2 3" class="core-reticle"/>
+          <circle cx="600" cy="285" r="3.2" class="core-singularity"/>
+          <line x1="581" y1="285" x2="590" y2="285" class="guide-tick-bright"/>
+          <line x1="610" y1="285" x2="619" y2="285" class="guide-tick-bright"/>
+          <line x1="600" y1="266" x2="600" y2="275" class="guide-tick-bright"/>
+          <line x1="600" y1="295" x2="600" y2="304" class="guide-tick-bright"/>
+        </g>
+        <text x="608" y="42" class="svg-micro">POLAR AXIS // +23.5° GIMBAL LOCK</text>
+        <text x="802" y="289" class="svg-micro">090° E</text>
+        <text x="358" y="289" class="svg-micro">270° W</text>
+        <text x="418" y="534" class="svg-micro">ARMILLARY // SHELL 268:162 · Z-OCCLUDED</text>
+      </g>
+
+      <!-- 暗色账本页：DNA 双螺旋 17° 斜轴构造线 -->
+      <g class="construct-guides construct-guides--dna">
+        <line x1="250" y1="285" x2="950" y2="285" stroke-dasharray="1 8" opacity="0.55"/>
+        <path d="M 678,285 A 78,78 0 0,0 674.6,262.2" fill="none" class="guide-arc-accent"/>
+        <g transform="rotate(-17 600 285)">
+          <line x1="210" y1="285" x2="990" y2="285" stroke-dasharray="4 6"/>
+          <line x1="250" y1="215" x2="950" y2="215" stroke-dasharray="2 7"/>
+          <line x1="250" y1="355" x2="950" y2="355" stroke-dasharray="2 7"/>
+          <line x1="320" y1="208" x2="320" y2="222"/>
+          <line x1="460" y1="208" x2="460" y2="222"/>
+          <line x1="600" y1="205" x2="600" y2="225" class="guide-tick-accent"/>
+          <line x1="740" y1="208" x2="740" y2="222"/>
+          <line x1="880" y1="208" x2="880" y2="222"/>
+          <line x1="320" y1="348" x2="320" y2="362"/>
+          <line x1="460" y1="348" x2="460" y2="362"/>
+          <line x1="600" y1="345" x2="600" y2="365" class="guide-tick-accent"/>
+          <line x1="740" y1="348" x2="740" y2="362"/>
+          <line x1="880" y1="348" x2="880" y2="362"/>
+          <text x="256" y="206" class="svg-micro">STRAND_A // BUYOUT ENVELOPE</text>
+          <text x="720" y="372" class="svg-micro">STRAND_B // GACHA ENVELOPE</text>
+          <text x="256" y="372" class="svg-micro">HELIX // TILT -17° · RUNGS=30 · SWEEP=6π</text>
+        </g>
+        <text x="686" y="276" class="svg-micro">17°</text>
+      </g>
+
+      <!-- 主体 RING：双反向大弧 + 交叉直线 -->
+      <path id="mobiusRingGhost"
+            d="M 385,70 A 215,215 0 1,0 385,500 C 495,500 705,70 815,70 A 215,215 0 1,1 815,500 C 705,500 495,70 385,70 Z"
+            fill="none"/>
+      <path id="mobiusRingMain"
+            d="M 385,70 A 215,215 0 1,0 385,500 C 495,500 705,70 815,70 A 215,215 0 1,1 815,500 C 705,500 495,70 385,70 Z"
+            fill="none"/>
+      <path id="mobiusOrbitTrack"
+            d="M 385,70 A 215,215 0 1,0 385,500 C 495,500 705,70 815,70 A 215,215 0 1,1 815,500 C 705,500 495,70 385,70 Z"
+            fill="none"/>
+
+      <!-- 动态外引线 SVG 层（从环上锚点拉出折线指向外围游戏卡） -->
+      <g id="orbitCalloutLines" class="orbit-callout-svg"></g>
+
+    </svg>
+
+    <div id="ui-daily" class="rhine-page" data-visible aria-label="日常">
+      <!-- 外围游戏节点层（卡片分布于双纽线外侧左右两翼，提供快捷日常勾选与一键启动） -->
+      <div id="orbitNodes" class="orbit-nodes" role="list" aria-label="外围游戏节点"></div>
+
+      <!-- 中央下方实时操作日志控制台（真数据 + 遥测流） -->
+      <div class="stage-console" aria-label="终端状态与实时遥测流">
+        <div class="console-header">
+          <div class="console-title-group">
+            <span class="rh-kicker" id="filterBadge">ALL SECTORS</span>
+            <h2 id="greeting">历史记录</h2>
+            <span class="console-sep">//</span>
+            <p id="summary">正在读取…</p>
+          </div>
+          <span class="rh-label">LOG STREAM · LIVE</span>
+        </div>
+        <div id="fakeTerminalFeed" class="console-feed" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <section id="ui-timed" class="rhine-page" aria-labelledby="tel-title" inert>
+      <!-- Hazard Stripe -->
+      <div class="hazard-ribbon" aria-hidden="true"></div>
+
+      <div class="timed-layout">
+        <!-- ======================================================================
+             1. TOP HEADER BAR
+             ====================================================================== -->
+        <header class="top-header">
+          <div class="header-left">
+            <div class="brand-eyebrow">
+              <span class="kicker-black kicker">DENIED · 0x4F</span>
+              <span class="micro">RHINE LAB // SYMMETRICAL TELEMETRY QUARANTINE</span>
+            </div>
+            <div class="brand-title-row">
+              <h1 class="brand-title" id="tel-title">Rhine Playtime Terminal</h1>
+              <span class="micro" style="color: var(--mute);">DUAL-SECTOR CUMULATIVE HOURS</span>
+            </div>
+          </div>
+
+          <div class="header-center">
+            <div class="warning-plaque" id="tel-warningPlaque" role="alert">
+              <span class="kicker kicker-crimson">[ ERR // 0x4F_TELEMETRY_REJECTED ]</span>
+              <span class="warning-text">同步链路已断开 · 双扇区本地隔离运行中</span>
+              <span class="micro-bold" style="color: var(--ink);" id="tel-denialCounterBadge">DENIALS: 07</span>
+            </div>
+          </div>
+
+          <div class="header-right">
+            <button class="chamber-btn" type="button" title="返回终端"
+                    id="tel-rhine-return">RETURN</button>
+            <div class="clock-readout" aria-label="终端系统时间">
+              <span class="clock-hm" id="tel-clockHM">19:26</span>
+              <div class="clock-sec-col">
+                <div class="clock-battery-bar" title="Telemetry Link Integrity: Severed">
+                  <span></span>
+                  <span class="warn"></span>
+                  <span></span>
+                </div>
+                <span class="clock-sec" id="tel-clockSec">00</span>
+              </div>
+            </div>
+            <div class="clock-sub-bar">
+              <div class="segmented-status" aria-hidden="true">
+                <i class="on-crimson"></i>
+                <i class="on-orange"></i>
+                <i class="on-orange"></i>
+                <i></i>
+                <i></i>
+                <i></i>
+              </div>
+              <span class="micro" style="color: var(--mute);">--DENIED: 1 // CUMULATIVE: <strong style="color: var(--ink);" id="tel-headerTotalHours">0.0H</strong></span>
+            </div>
+          </div>
+        </header>
+
+        <!-- ======================================================================
+             2. SYMMETRICAL 5-COLUMN WORKSPACE
+                [3A Ledger] | [3A Polar Dial] | [3D Mobius Stage] | [Live Dial] | [Live Ledger]
+             ====================================================================== -->
+        <main class="timed-wings">
+          <div class="timed-wing">
+            <!-- COLUMN 1 (FAR LEFT): 3A_SINGLE // LEDGER (TOP 5 BY HOURS) -->
+            <aside class="ledger-panel" aria-label="3A单机档案账本">
+              <div class="ledger-top-strip single-accent">
+                <span class="kicker-black kicker">[ 3A_SINGLE // LEDGER ]</span>
+                <span class="micro-bold" style="color: var(--ink-bright);" id="tel-total3AHeader">0.0 HRS</span>
+              </div>
+              <div class="ledger-sub-strip">
+                <span class="micro" id="tel-count3ALabel">TOP-5 BY HOURS / 00 UNITS</span>
+                <button class="micro-btn track-entry" id="tel-track3ABtn" type="button">TRACK</button>
+              </div>
+
+              <div class="ledger-list" id="tel-ledger3AList"></div>
+
+              <div class="folded-badge-strip" id="tel-folded3AStrip">
+                <span class="micro">FOLDED_INTO_OTHER</span>
+                <span class="micro-bold" style="color: var(--ink);" id="tel-folded3ACount">+02 UNITS</span>
+              </div>
+
+              <div class="ledger-footer-actions">
+              </div>
+            </aside>
+
+            <!-- COLUMN 2 (INNER LEFT): DIAL-A // 3A_SINGLE POLAR STATISTICAL DIAL -->
+            <section class="dial-panel" aria-label="3A单机统计圆盘">
+              <div class="dial-header">
+                <span class="kicker-black kicker">[ DIAL-A // 3A_SINGLE ]</span>
+                <span class="micro" style="color: var(--mute);">IN_DIAL SHARE</span>
+              </div>
+
+              <div class="dial-stage-box">
+                <div class="dial-svg-holder">
+                  <svg class="polar-dial-svg" id="tel-dial3ASvg" viewBox="0 0 236 236" role="img" aria-label="3A单机极坐标统计圆盘">
+                    <circle cx="118" cy="118" r="110" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+                    <g id="tel-dial3ATicks"></g>
+                    <circle cx="118" cy="118" r="62" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1" />
+                    <line x1="118" y1="48" x2="118" y2="58" stroke="rgba(242,240,235,0.36)" stroke-width="1" />
+                    <line x1="118" y1="178" x2="118" y2="188" stroke="rgba(242,240,235,0.36)" stroke-width="1" />
+                    <line x1="48" y1="118" x2="58" y2="118" stroke="rgba(242,240,235,0.36)" stroke-width="1" />
+                    <line x1="178" y1="118" x2="188" y2="118" stroke="rgba(242,240,235,0.36)" stroke-width="1" />
+                    <circle cx="118" cy="118" r="82" fill="none" stroke="var(--faint)" stroke-width="19" />
+                    <g id="tel-dial3AArcs"></g>
+                  </svg>
+
+                  <div class="dial-center-readout">
+                    <span class="dial-center-tag" id="tel-dial3ACenterTag">3A_SINGLE TOTAL</span>
+                    <div class="dial-center-hours" id="tel-dial3ACenterHours">0.0<small>H</small></div>
+                    <span class="dial-center-badge" id="tel-dial3ACenterBadge">100.0% · SEVERED</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dial-breakdown">
+                <div class="dial-legend-list" id="tel-dial3ALegend"></div>
+                <section class="dial-ranking" aria-labelledby="tel-dial3ARankTitle">
+                  <h3 class="dial-ranking-title" id="tel-dial3ARankTitle">TOP-5 BY HOURS</h3>
+                  <div id="tel-dial3ARanking"></div>
+                </section>
+              </div>
+
+              <div class="dial-footer-stats">
+                <div class="dial-stat-line">
+                  <span>SECTOR_TOTAL <strong id="tel-dial3ASectorTotal">0.0H</strong></span>
+                </div>
+                <div class="dial-stat-line">
+                  <span>GLOBAL_SHARE</span>
+                  <strong id="tel-dial3AGlobalShare">00.0%</strong>
+                </div>
+                <div class="dial-stat-line">
+                  <span>QUOTA_BREACHES</span>
+                  <strong id="tel-dial3ABreaches">00 UNITS</strong>
+                </div>
+                <div class="dial-stat-line">
+                  <span>DISPLAYED_UNITS</span>
+                  <strong id="tel-dial3ADisplayed">00 UNITS</strong>
+                </div>
+              </div>
+            </section>
+
+          </div>
+          <div class="timed-wing">
+          <!-- COLUMN 4 (INNER RIGHT): DIAL-B // LIVE_OPS POLAR STATISTICAL DIAL -->
+          <section class="dial-panel" aria-label="长线运营统计圆盘">
+            <div class="dial-header">
+              <span class="kicker-black kicker">[ DIAL-B // LIVE_OPS ]</span>
+              <span class="micro" style="color: var(--mute);">IN_DIAL SHARE</span>
+            </div>
+
+            <div class="dial-stage-box">
+              <div class="dial-svg-holder">
+                <svg class="polar-dial-svg" id="tel-dialLiveSvg" viewBox="0 0 236 236" role="img" aria-label="长线运营极坐标统计圆盘">
+                  <circle cx="118" cy="118" r="110" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1" />
+                  <g id="tel-dialLiveTicks"></g>
+                  <circle cx="118" cy="118" r="62" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1" />
+                  <line x1="118" y1="48" x2="118" y2="58" stroke="rgba(242,240,235,0.36)" stroke-width="1" />
+                  <line x1="118" y1="178" x2="118" y2="188" stroke="rgba(242,240,235,0.36)" stroke-width="1" />
+                  <line x1="48" y1="118" x2="58" y2="118" stroke="rgba(242,240,235,0.36)" stroke-width="1" />
+                  <line x1="178" y1="118" x2="188" y2="118" stroke="rgba(242,240,235,0.36)" stroke-width="1" />
+                  <circle cx="118" cy="118" r="82" fill="none" stroke="var(--faint)" stroke-width="19" />
+                  <g id="tel-dialLiveArcs"></g>
+                </svg>
+
+                <div class="dial-center-readout">
+                  <span class="dial-center-tag" id="tel-dialLiveCenterTag">LIVE_OPS TOTAL</span>
+                  <div class="dial-center-hours" id="tel-dialLiveCenterHours">0.0<small>H</small></div>
+                  <span class="dial-center-badge" id="tel-dialLiveCenterBadge">100.0% · SEVERED</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="dial-breakdown">
+              <div class="dial-legend-list" id="tel-dialLiveLegend"></div>
+              <section class="dial-ranking" aria-labelledby="tel-dialLiveRankTitle">
+                <h3 class="dial-ranking-title" id="tel-dialLiveRankTitle">TOP-5 BY HOURS</h3>
+                <div id="tel-dialLiveRanking"></div>
+              </section>
+            </div>
+
+            <div class="dial-footer-stats">
+              <div class="dial-stat-line">
+                <span>SECTOR_TOTAL <strong id="tel-dialLiveSectorTotal">0.0H</strong></span>
+              </div>
+              <div class="dial-stat-line">
+                <span>GLOBAL_SHARE</span>
+                <strong id="tel-dialLiveGlobalShare">00.0%</strong>
+              </div>
+              <div class="dial-stat-line">
+                <span>QUOTA_BREACHES</span>
+                <strong id="tel-dialLiveBreaches">00 UNITS</strong>
+              </div>
+              <div class="dial-stat-line">
+                <span>DISPLAYED_UNITS</span>
+                <strong id="tel-dialLiveDisplayed">00 UNITS</strong>
+              </div>
+            </div>
+          </section>
+
+          <!-- COLUMN 5 (FAR RIGHT): LIVE_OPS // LEDGER (TOP 5 BY HOURS) -->
+          <aside class="ledger-panel" aria-label="长线运营档案账本">
+            <div class="ledger-top-strip live-accent">
+              <span class="kicker-black kicker">[ LIVE_OPS // LEDGER ]</span>
+              <span class="micro-bold" style="color: var(--ink-bright);" id="tel-totalLiveHeader">0.0 HRS</span>
+            </div>
+            <div class="ledger-sub-strip">
+              <span class="micro" id="tel-countLiveLabel">TOP-5 BY HOURS / 00 UNITS</span>
+              <button class="micro-btn track-entry" id="tel-trackLiveBtn" type="button">TRACK</button>
+            </div>
+
+            <div class="ledger-list" id="tel-ledgerLiveList"></div>
+
+            <div class="folded-badge-strip" id="tel-foldedLiveStrip">
+              <span class="micro">FOLDED_INTO_OTHER</span>
+              <span class="micro-bold" style="color: var(--ink);" id="tel-foldedLiveCount">+02 UNITS</span>
+            </div>
+
+            <div class="ledger-footer-actions">
+            </div>
+          </aside>
+          </div>
+        </main>
+
+        <div class="terminal-shell">
+          <div class="chamber-bottom-bar">
+            <div class="chamber-controls">
+              <button class="chamber-btn fault-btn" id="tel-triggerFaultBtn" type="button">TRIGGER FAULT</button>
+              <button class="chamber-btn" id="tel-syncDataBtn" type="button" title="重新读取 playtime.json">SYNC</button>
+            </div>
+            <span class="micro" id="tel-activeFocusReadout">FOCUS: NONE</span>
+          </div>
+          <div class="rejection-log-box" aria-label="遥测同步异常审计日志">
+            <div class="log-box-header">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="kicker kicker-black">[ MOD-03 // DENIAL_AUDIT_LOG ]</span>
+                <span class="zh" style="font-size: 11px; color: var(--ink);">实时拒止审计终端</span>
+              </div>
+              <span class="micro" style="color: var(--mute);" id="tel-logCountReadout">00 EVENTS</span>
+            </div>
+            <div class="log-entries" id="tel-logEntries"></div>
+          </div>
+          <footer class="bottom-rail">
+            <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+              <span class="micro">RHINE-LAB · SYMMETRICAL QUARANTINE TERMINAL VER 2.0</span>
+              <span class="micro">RULE: TRACKED / TOP-5 BY HOURS PER SECTOR</span>
+              <span class="micro" id="tel-playtimeStatus" style="color: var(--mute);">PLAYTIME: LOADING</span>
+              <span class="micro">CANVAS_MOUNT: #rhine-motif-slot</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span class="micro">STATE: <strong style="color: var(--ink);">--DENIED: 1 [LOCKED]</strong></span>
+            </div>
+          </footer>
+        </div>
+      </div>
+
+      <!-- ========================================================================
+           详情弹窗：点账本条目 / 表盘切片打开，只读展示真实数据
+           ======================================================================== -->
+      <div class="modal-overlay" id="tel-detailModal" role="dialog" aria-modal="true" aria-labelledby="tel-detailName">
+        <div class="modal-card">
+          <div class="modal-top">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="kicker kicker-orange" id="tel-detailSector">3A_SINGLE</span>
+              <span class="micro-bold">// SPECIMEN RECORD</span>
+            </div>
+            <button class="micro-btn" id="tel-closeDetailBtn" type="button">ESC [×]</button>
+          </div>
+
+          <div class="modal-form">
+            <div class="warning-plaque">
+              <span class="kicker kicker-black">[ SPECIMEN RECORD ]</span>
+              <span class="micro">PLAYTIME RECORD</span>
+            </div>
+            <div class="field-group">
+              <label class="micro">TITLE // <span class="zh">档案标题</span></label>
+              <div class="micro-bold" id="tel-detailName" style="font-size: 15px; letter-spacing: 0.4px;">—</div>
+              <div class="micro" id="tel-detailNameEn" style="margin-top: 4px; color: var(--mute);"></div>
+            </div>
+
+            <div class="field-grid-2">
+              <div class="field-group">
+                <label class="micro">CUMULATIVE // <span class="zh">累计时长</span></label>
+                <div class="micro-bold" id="tel-detailHours" style="font-size: 22px;">—</div>
+              </div>
+              <div class="field-group">
+                <label class="micro">SECTOR_RANK // <span class="zh">扇区排名</span></label>
+                <div class="micro-bold" id="tel-detailRank" style="font-size: 22px;">—</div>
+              </div>
+            </div>
+
+            <div class="field-grid-2">
+              <div class="field-group">
+                <label class="micro">SECTOR_SHARE // <span class="zh">扇区占比</span></label>
+                <div class="micro-bold" id="tel-detailShare">—</div>
+              </div>
+              <div class="field-group">
+                <label class="micro">SOURCE // <span class="zh">数据来源</span></label>
+                <div class="micro-bold" id="tel-detailSource">—</div>
+              </div>
+            </div>
+
+            <div class="field-grid-2">
+              <div class="field-group">
+                <label class="micro">SESSIONS // <span class="zh">本地会话数</span></label>
+                <div class="micro-bold" id="tel-detailSessions">—</div>
+              </div>
+              <div class="field-group">
+                <label class="micro">LAST_SYNC // <span class="zh">最近同步</span></label>
+                <div class="micro-bold" id="tel-detailLast">—</div>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="micro">APP ID // <span class="zh">Steam AppID</span></label>
+              <div class="micro" id="tel-detailAppid" style="color: var(--mute);">—</div>
+            </div>
+
+            <div class="modal-actions">
+              <span class="micro tracking-status" id="tel-detailTrackNotice" role="status"></span>
+              <button class="btn-secondary-dark" id="tel-trackDetailBtn" type="button">加入追踪</button>
+              <button class="btn-secondary-dark" id="tel-focusDetailBtn" type="button">锁定为焦点</button>
+              <button class="btn-inverted" style="width: auto; padding: 7px 16px;" id="tel-closeDetailBtn2" type="button">关闭 / CLOSE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-overlay" id="tel-trackingModal" role="dialog" aria-modal="true" aria-labelledby="tel-trackingTitle">
+        <div class="modal-card">
+          <div class="modal-top">
+            <span class="micro-bold" id="tel-trackingTitle">// TRACKING SELECTOR</span>
+            <button class="micro-btn" id="tel-closeTrackingBtn" type="button">ESC [×]</button>
+          </div>
+          <div class="modal-form">
+            <div class="warning-plaque">
+              <span class="kicker kicker-black">[ TRACKING SELECTOR ]</span>
+              <span class="micro">PLAYTIME RECORD</span>
+            </div>
+            <input class="rl-input" id="tel-trackingSearch" type="search" aria-label="按中英文游戏名搜索" placeholder="搜索游戏 / SEARCH">
+            <div class="tracking-list" id="tel-trackingList"></div>
+            <div class="modal-actions">
+              <span class="micro tracking-status" id="tel-trackingCount" role="status"></span>
+              <button class="btn-secondary-dark" id="tel-clearTrackingBtn" type="button">全部清除</button>
+              <button class="btn-inverted" style="width: auto; padding: 7px 16px;" id="tel-doneTrackingBtn" type="button">完成</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ui-ledger" class="rhine-page rhine-page-denied" aria-labelledby="led-title" inert>
+      <div class="hazard-ribbon"></div>
+      <div id="led-micro-bg"></div>
+      <div id="led-toast" role="status"></div>
+
+      <div class="terminal-shell">
+        <!-- ======================================================================
+             1. TOP HEADER BAR
+             ====================================================================== -->
+        <header class="top-header">
+          <div class="header-left">
+            <div class="brand-block">
+              <div class="brand-eyebrow">
+                <span class="rh-kicker">RHINE FISCAL // AUDIT TERMINAL</span>
+                <span class="rh-label">DUAL-STRAND LEDGER</span>
+              </div>
+              <div class="brand-title-row">
+                <h1 class="brand-title" id="led-title">Rhine Game Ledger</h1>
+              </div>
+            </div>
+
+            <div class="period-pills" role="tablist" aria-label="时间周期筛选">
+              <button type="button" class="active" data-period="month">本月</button>
+              <button type="button" data-period="quarter">三个月</button>
+              <button type="button" data-period="year">今年</button>
+              <button type="button" data-period="all">全部</button>
+            </div>
+          </div>
+
+          <!-- Center: 中轴留白，让 17° 斜向 DNA 螺旋与构造线完整呼吸 -->
+          <div class="header-center"></div>
+
+          <!-- Right Fiscal Summary Gauge & Live Digital Clock -->
+          <div class="header-right">
+            <div class="fiscal-gauge" aria-label="周期支出总览与双轨占比">
+              <div class="fg-top">
+                <span class="rh-label">PERIOD TOTAL</span>
+                <strong class="fg-total" id="led-headerTotal">¥0</strong>
+              </div>
+              <div class="fg-bar" aria-hidden="true">
+                <i class="fg-seg-a" id="led-headerBarA" style="width: 50%;"></i>
+                <i class="fg-seg-b" id="led-headerBarB" style="width: 50%;"></i>
+              </div>
+              <div class="fg-foot">
+                <span>BUYOUT <b id="led-headerPctA">50%</b></span>
+                <span>GACHA <b id="led-headerPctB">50%</b></span>
+              </div>
+            </div>
+            <div class="clock-display">
+              <span class="clock-hm" id="led-clockHm">12:21</span>
+              <div class="clock-side">
+                <span class="clock-sec" id="led-clockSec">00</span>
+                <span class="clock-date" id="led-clockDate">2026.11.25</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- ======================================================================
+             2. MAIN WORKSPACE (LEFT RAIL | SHARED MOTIF CLEARANCE | RIGHT RAIL)
+             ====================================================================== -->
+        <div class="main-stage">
+          <!-- LEFT RAIL (320px): SCROLL-FREE COMPACT GAME LIST -->
+          <aside class="left-rail" aria-label="游戏支出序列">
+            <div class="panel-frame" style="height: 100%;">
+              <div class="panel-head">
+                <div>
+                  <span class="rh-label">GAME SEQUENCE // 支出序列</span>
+                  <h2 class="panel-title">双轨游戏账单</h2>
+                </div>
+                <span style="font-family: var(--mono); font-size: 13.5px; font-weight: 700; color: var(--orange);" id="led-leftTotalReadout">¥0</span>
+              </div>
+
+              <div class="cat-tabs" role="tablist">
+                <button type="button" class="active" data-cat="all">全部</button>
+                <button type="button" data-cat="buyout">单机买断</button>
+                <button type="button" data-cat="gacha">长线抽卡</button>
+              </div>
+
+              <div class="game-list" id="led-gameListContainer">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+          </aside>
+
+          <!-- CENTER STAGE: SPEND SHARES + RECENT AUDIT STREAM -->
+          <section class="center-stage" aria-label="中央DNA双螺旋与近期流水审计">
+            <div class="spend-shares">
+              <div class="strand-pill buyout">
+                <span>STRAND_A // BUYOUT</span>
+                <span id="led-pillShareA" style="color: var(--mute);">0%</span>
+              </div>
+
+              <div class="strand-pill gacha">
+                <span id="led-pillShareB" style="color: var(--orange);">0%</span>
+                <span>STRAND_B // GACHA_LIVE</span>
+              </div>
+            </div>
+
+            <!-- Bottom Center Stream (680px wide, compact 4-row terminal) -->
+            <div class="audit-strip" aria-label="近期流水审计">
+              <div class="audit-strip-head">
+                <span class="rh-kicker" style="background: var(--orange); color: #060607;">近期流水审计 // LIVE LEDGER STREAM</span>
+                <span class="rh-label">LATEST 08 BASE-PAIR SLICES</span>
+              </div>
+              <div class="audit-rows" id="led-auditRowsContainer">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+          </section>
+
+          <!-- RIGHT RAIL (320px): SPEND COMPOSITION & SPECIMEN ARCHIVE -->
+          <aside class="right-rail" aria-label="消费类型构成与单游明细档案">
+            <!-- Top Card: Spend Composition -->
+            <div class="panel-frame">
+              <div class="panel-head">
+                <div>
+                  <span class="rh-label">SPEND COMPOSITION</span>
+                  <h2 class="panel-title">消费类型构成</h2>
+                </div>
+                <span class="rh-label">4-TYPE SPLIT</span>
+              </div>
+
+              <div class="comp-body" id="led-spendCompositionBody">
+                <!-- Rendered by JS -->
+              </div>
+
+              <!-- 消费类型构成饼图（氪金+月卡 / 买断+DLC） -->
+              <div class="comp-donut" id="led-spendDonut" aria-label="消费类型构成饼图">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+
+            <!-- Bottom Card: Specimen Archive -->
+            <div class="panel-frame specimen-panel">
+              <div class="panel-head">
+                <div>
+                  <span class="rh-label">SPECIMEN ARCHIVE</span>
+                  <h2 class="panel-title">单游明细档案</h2>
+                </div>
+                <button type="button" id="led-quickAddSpecimenBtn" style="padding: 3px 8px; min-height: 24px; font-size: 11px; border-color: var(--orange); color: var(--orange);">+ 记一笔</button>
+              </div>
+
+              <div class="specimen-body" id="led-specimenBody">
+                <!-- Rendered by JS -->
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <!-- SLIDE-OVER ENTRY DRAWER (+ 记一笔) -->
+      <div class="drawer-backdrop is-hidden" id="led-drawerBackdrop" role="dialog" aria-modal="true" aria-label="录入游戏消费">
+        <form class="entry-drawer" id="led-entryForm">
+          <svg class="drawer-corner-ticks" viewBox="0 0 380 800" preserveAspectRatio="none">
+            <g stroke="#f2f0eb" stroke-opacity="0.28" stroke-width="1.2" fill="none">
+              <polyline points="0,16 0,0 16,0" />
+              <polyline points="364,0 380,0 380,16" />
+              <polyline points="0,784 0,800 16,800" />
+              <polyline points="364,800 380,800 380,784" />
+            </g>
+          </svg>
+
+          <div class="drawer-fields">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--line);">
+              <div>
+                <span class="rh-kicker" style="background: var(--orange); color: #060607;">LEDGER_DISPATCH</span>
+                <h3 style="margin: 5px 0 0; font-size: 18px;">记一笔游戏支出</h3>
+              </div>
+              <button type="button" id="led-closeDrawerBtn">关闭</button>
+            </div>
+
+            <div class="field-group">
+              <label class="rh-label" for="led-inputGameName">游戏项目 // GAME TITLE</label>
+              <input type="text" id="led-inputGameName" list="led-knownGamesList" placeholder="输入或选择游戏（如：绝区零 / 艾尔登法环）" required />
+              <datalist id="led-knownGamesList"></datalist>
+            </div>
+
+            <div class="field-group">
+              <label class="rh-label" for="led-inputCategory">消费轨道 // HELIX STRAND</label>
+              <select id="led-inputCategory">
+                <option value="gacha">长线抽卡 / 服务型 (STRAND_B · 信号橙)</option>
+                <option value="buyout">单机买断 / DLC (STRAND_A · 暖白)</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="rh-label" for="led-inputSubType">消费细分类型 // SUB-TYPE</label>
+              <select id="led-inputSubType">
+                <option value="氪金">氪金</option>
+                <option value="大小月卡/通行证">大小月卡/通行证</option>
+                <option value="本体买断">本体买断</option>
+                <option value="DLC/扩展包">DLC/扩展包</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="rh-label" for="led-inputItemTag">项目备注标签 // ITEM TAG</label>
+              <input type="text" id="led-inputItemTag" placeholder="例如：648单 / 大小月卡 / 黄金树幽影DLC" required />
+              <div class="subtag-chips" id="led-subtagChips">
+                <button type="button" data-tag="氪金" data-sub="氪金" data-cat="gacha">氪金</button>
+                <button type="button" data-tag="大小月卡" data-sub="大小月卡/通行证" data-cat="gacha">大小月卡</button>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label class="rh-label" for="led-inputAmount">实付金额 (JPY ¥) // AMOUNT</label>
+              <input type="number" id="led-inputAmount" min="1" step="1" placeholder="例如 610" required />
+            </div>
+          </div>
+
+          <div style="position: relative; z-index: 1; display: flex; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line);">
+            <button type="button" id="led-cancelDrawerBtn" style="flex: 1;">取消</button>
+            <button type="submit" class="btn-orange" style="flex: 2;">确认入账并激发脉冲</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </section>
+
+  <!-- 检视标本档案罩（点击游戏卡片主体展开详细月卡/卡池/抽卡配置） -->
+  <aside id="specimenPanel" class="specimen-panel" hidden aria-label="游戏档案检视面板">
+    <div class="corner-tick tl"></div>
+    <div class="corner-tick tr"></div>
+    <div class="corner-tick bl"></div>
+    <div class="corner-tick br"></div>
+
+    <div id="specimenGhost" class="specimen-ghost" aria-hidden="true">01</div>
+
+    <div class="specimen-head">
+      <div>
+        <div class="specimen-kicker-row">
+          <span class="rh-kicker" id="specimenIndex">NODE // 01</span>
+          <span class="rh-label" id="specimenStatusTag">STATUS // PENDING</span>
+        </div>
+        <h3 id="specimenTitle" title="点击可修改游戏名称">未选择游戏</h3>
+      </div>
+      <div class="specimen-head-actions">
+        <button id="specimenLaunchBtn" class="btn-solid">启动终端</button>
+        <button id="specimenCloseBtn" class="secondary" aria-label="关闭检视面板">×</button>
+      </div>
+    </div>
+
+    <hr class="rh-hairline">
+
+    <div id="specimenBody" class="specimen-body"></div>
+
+    <div class="specimen-foot">
+      <span class="rh-label">SPECIMEN // CLASS-A SEAL</span>
+      <span class="rh-label">JST 05:00 AUTO-ARCHIVE</span>
+    </div>
+  </aside>
+
+  <!-- 常驻归档矩阵（一级界面元素：七日完成度 + 上周周常核销） -->
+  <aside class="archive-inline" aria-label="归档矩阵">
+    <div class="ai-head">
+      <span class="rh-kicker">ARCHIVE MATRIX</span>
+      <span class="rh-label">JST 05:00 SNAPSHOT</span>
+    </div>
+
+    <div class="archive-block">
+      <div class="archive-block-head">
+        <span class="rh-label">DAILY MATRIX // 7日完成度</span>
+        <div class="legend">
+          <span><i class="lg-box yes"></i> 已完成</span>
+          <span><i class="lg-box miss"></i> 未完成</span>
+        </div>
+      </div>
+      <div class="matrix-wrap">
+        <div class="matrix" id="history"></div>
+      </div>
+    </div>
+
+    <div class="archive-block">
+      <div class="archive-block-head">
+        <span class="rh-label">WEEKLY LOG // 上周周常核销</span>
+        <span class="rh-label">CYCLE -01</span>
+      </div>
+      <div id="weeklyStatus" class="weekly-list"></div>
+    </div>
+
+    <div class="ai-foot">
+      <span class="rh-label">SPECIMEN // CLASS-A SEAL</span>
+      <span class="rh-label">JST 05:00 AUTO-ARCHIVE</span>
+    </div>
+  </aside>
+
+  <!-- 四角 HUD：左下筛选与归档视图切换 -->
+  <footer class="hud-bl">
+    <div class="hud-bl-meta">
+      <span class="note">日本时间 · 每日 05:00 刷新</span>
+      <span class="rh-label">SECTOR // RHINE-COMPANION</span>
+    </div>
+  </footer>
+
+  <!-- 四角 HUD：右下批量指令与存储遥测 -->
+  <footer class="hud-br">
+    <div class="batch">
+      <button onclick="manualClearDaily()">清空日常</button>
+      <button class="secondary" onclick="manualClearWeekly()">清空周常</button>
+      <button class="secondary" onclick="recordLastWeekNow()">补录上周周常</button>
+      <button class="secondary" onclick="recordTodayNow()">记录今天并清空</button>
+      <button class="danger" onclick="resetEverything()">重置本终端</button>
+    </div>
+    <div class="hud-br-status">
+      <span id="saveStatus" role="status">正在读取…</span>
+      <span class="rh-label">POWERED BY RHINE LAB ▬</span>
+    </div>
+  </footer>
+
+  <!-- 隐藏的原生数据容器：保持 app.js 100% 兼容 -->
+  <div id="table-scroll" class="native-bridge-pool" aria-hidden="true">
+    <div id="games"></div>
+    <div id="empty" class="empty" hidden>
+      <p>今日已全部完成。好好休息。</p>
+      <button id="showall">查看全部游戏</button>
+    </div>
+  </div>
+</main>
+
+<!-- 设置弹窗 -->
+<dialog id="settingsDialog">
+  <div class="settings-head">
+    <div>
+      <span class="rh-kicker">SYSTEM CONFIG</span>
+      <h3>游戏与终端设置</h3>
+    </div>
+    <button id="closeSettings" class="secondary">完成</button>
+  </div>
+  <p class="sub">添加或删除游戏，设置游戏名称与启动位置。修改会自动保存。</p>
+  <div class="assistant-settings">
+    <label class="pity"><input id="assistantEnabled" type="checkbox"><span>允许 AI 操作（BIONIC LINK）</span></label>
+    <p class="sub">开启后，Bionic 可查看记录、勾选日常／周常、充值月卡、设置卡池日期、累加角色／武器抽数和启动游戏。</p>
+    <span id="assistantStatus" role="status">正在检查连接设置…</span>
+  </div>
+  <div id="settingsGames"></div>
+  <div class="settings-footer">
+    <button id="addGame">＋ 添加游戏</button>
+    <span id="settingsStatus" role="status"></span>
+  </div>
+</dialog>
+
+<input type="file" id="importFile" accept="application/json,.json" hidden>
+<div id="notice" role="status" hidden></div>
+
+<section id="boot-screen" data-dark-boot hidden aria-label="小助手启动">
+  <div id="boot-veil" aria-hidden="true">
+    <div class="veil-tag">
+      <span class="veil-kicker" id="boot-veil-kicker">SEALED // 0x00</span>
+      <span>RHINE ARCHIVE ENCRYPTION LAYER</span>
+    </div>
+    <p class="veil-cipher">00 <span>//</span> <em id="boot-cipher-word" style="font-style:normal">SEALED</em></p>
+    <div class="veil-auth">&gt; AUTH_KEY: RHINE-NODE-01 ··· <strong id="boot-auth-state">VERIFYING</strong></div>
+  </div>
+  <div id="boot-blade" aria-hidden="true"></div>
+  <header class="boot-chrome">
+    <div class="boot-brand">
+      <span class="boot-kicker">RHINE LAB LLC</span>
+      <span class="boot-meta">ARCHIVE OS // VER 2.0 · OBSIDIAN INVERSION</span>
+    </div>
+    <span class="boot-phase" id="boot-phase">SEALED // 0x00_VERIFY</span>
+  </header>
+  <i class="boot-corner tl boot-chrome" aria-hidden="true"></i>
+  <i class="boot-corner tr boot-chrome" aria-hidden="true"></i>
+  <i class="boot-corner bl boot-chrome" aria-hidden="true"></i>
+  <i class="boot-corner br boot-chrome" aria-hidden="true"></i>
+  <div id="boot-name">
+    <div class="boot-access">
+      <span class="boot-grant">LOCAL ACCESS / GRANTED</span>
+      <span class="boot-meta">SECTOR // RHINE-NODE-01</span>
+    </div>
+    <strong>Personal G Rhine Terminal</strong>
+  </div>
+  <footer class="boot-chrome">
+    <div class="boot-progress-wrap">
+      <span class="boot-meta">DECRYPT</span>
+      <div class="boot-bar"><i id="boot-bar-fill"></i></div>
+      <span class="boot-pct" id="boot-pct">000%</span>
+    </div>
+    <span class="boot-skip">ESC / CLICK TO SKIP</span>
+  </footer>
+</section>
+<script>
+(()=>{
+ const root=document.documentElement, shell=document.getElementById('rhine-shell');
+ const screen=document.getElementById('boot-screen'), slot=document.getElementById('rhine-motif-slot');
+ const veil=document.getElementById('boot-veil');
+ const veilKicker=document.getElementById('boot-veil-kicker');
+ const cipherWord=document.getElementById('boot-cipher-word');
+ const authState=document.getElementById('boot-auth-state');
+ const phaseEl=document.getElementById('boot-phase');
+ const barFill=document.getElementById('boot-bar-fill');
+ const pctEl=document.getElementById('boot-pct');
+ // 带 ?noboot=1 时跳过启动动画
+ if(location.search.indexOf('noboot')>=0){screen.hidden=true;return}
+ const totalSec = 5.6;
+ const unlockAt = 1.05, bladeStart = 1.38, invertFlip = 1.85;
+ const assembleStart = 1.78, assembleEnd = 3.68, bootVoiceAt = 3.65;
+ const clamp = value => Math.max(0, Math.min(1, value));
+ let unlocked = false, flipped = false, bladeVoicePlayed = false, assembleSfxPlayed = false, endVoicePlayed = false, bootPreloaded = false, lastPhase = '';
+ let frame, timer;
+ function finish(){
+  window.RhineAudio?.stopBootSounds();
+  window.RhineAudio?.stopBed();
+  cancelAnimationFrame(frame);clearTimeout(timer);delete root.dataset.startup;
+  delete slot.dataset.bootClock;screen.hidden=true;shell.inert=false;
+  screen.removeEventListener('click',finish);
+  window.removeEventListener('keydown',escape,true);
+ }
+ function escape(e){if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();finish()}}
+ const start=performance.now();
+ function tick(now){
+  const sec=(now-start)/1000;
+  if(sec>=totalSec){finish();return}
+  if(!bootPreloaded && window.RhineAudio && typeof window.RhineAudio.preloadBootSfx === 'function'){
+   bootPreloaded = true; window.RhineAudio.preloadBootSfx();
+  }
+  if(sec>=unlockAt && !unlocked){
+   unlocked = true;
+   veil?.setAttribute('data-unlocked', '');
+   if(veilKicker) veilKicker.textContent = 'GRANTED // 0x01';
+   if(cipherWord) cipherWord.textContent = 'OPEN';
+   if(authState) authState.textContent = 'AUTHORIZED';
+   window.RhineAudio?.sfx('bootUnlock', 1.8, { boot: true });
+  }
+  if(sec>=bladeStart && !bladeVoicePlayed){
+   bladeVoicePlayed = true;
+   window.RhineAudio?.sfx('bootBlade', 2.0, { boot: true });
+   window.RhineAudio?.voice('pen', 0.0);
+  }
+  if(sec>=assembleStart && !assembleSfxPlayed){
+   assembleSfxPlayed = true;
+   window.RhineAudio?.sfx('bootAssemble', 2.0, { boot: true });
+  }
+  if(sec>=invertFlip && !flipped){
+   flipped = true;
+   screen.removeAttribute('data-dark-boot');
+  }
+  if(sec>=bootVoiceAt && !endVoicePlayed){
+   endVoicePlayed = true;
+   window.RhineAudio?.voice('boot', 0.0);
+  }
+  const pct = Math.min(100, Math.round(clamp(sec / 3.85) * 100));
+  if(barFill) barFill.style.width = pct + '%';
+  if(pctEl) pctEl.textContent = String(pct).padStart(3, '0') + '%';
+  const nextPhase = sec < unlockAt ? 'SEALED // 0x00_VERIFY'
+    : sec < assembleStart ? 'SWEEP // 0x01_LIME_INVERT'
+    : sec < assembleEnd ? 'UNFOLD // 0x02_MOBIUS_240'
+    : 'READY // 0x03_ACCESS_GRANTED';
+  if(phaseEl && nextPhase !== lastPhase){ lastPhase = nextPhase; phaseEl.textContent = nextPhase; }
+  frame=requestAnimationFrame(tick);
+ }
+ root.dataset.startup='';shell.inert=true;
+ slot.dataset.bootClock=[start,assembleStart,assembleEnd].join(',');
+ screen.hidden=false;
+ screen.addEventListener('click',finish);
+ window.addEventListener('keydown',escape,true);
+ timer=setTimeout(finish, totalSec * 1000);frame=requestAnimationFrame(tick);
+})();
+</script>
+<script src="app.js" defer></script>
+<script src="rhine-audio.js" defer></script>
+<script src="rhine-orbit.js" defer></script>
+<script src="rhine-motif.js" defer></script>
+<script src="rhine-rotate.js" defer></script>
+<script src="rhine-pages.js" defer></script>
+<script>
+/* 音效总开关：状态落盘在宿主 dataDir/prefs.json（换端口、重启、清浏览器数据都不丢）；
+   只有脱离宿主直接开页面时才退回 localStorage。
+   读取 window.dispatchEvent('rhine:audio', {detail:{on}}) / html[data-audio] */
+(function(){
+  var KEY='rhine.audio';
+  var HOSTED = location.hostname==='127.0.0.1' || location.hostname==='app.local';
+  var TOKEN = location.pathname.split('/').filter(Boolean)[0] || '';
+  var el=document.getElementById('audioToggle');
+  var label=document.getElementById('audioState');
+  if(!el||!label) return;
+  function apply(on, persist){
+    el.classList.toggle('is-on', on);
+    el.setAttribute('aria-checked', on?'true':'false');
+    label.textContent = on?'ON':'OFF';
+    document.documentElement.setAttribute('data-audio', on?'on':'off');
+    if(persist) save(on?'1':'0');
+    window.dispatchEvent(new CustomEvent('rhine:audio',{detail:{on:on}}));
+    try{localStorage.setItem('rhine.audio', on?'1':'0');}catch(e){}   // 异常页跨文档读不到 prefs，靠这个同步
+  }
+  function save(value){
+    try{ localStorage.setItem(KEY, value); }catch(e){}
+    if(!HOSTED) return;
+    fetch('api/prefs',{method:'POST',headers:{'Content-Type':'application/json','X-Desktop-Token':TOKEN},body:JSON.stringify({key:KEY,value:value})}).catch(function(){});
+  }
+  function load(){
+    if(!HOSTED){ try{ return Promise.resolve(localStorage.getItem(KEY)); }catch(e){ return Promise.resolve(null); } }
+    return fetch('api/prefs',{headers:{'X-Desktop-Token':TOKEN}})
+      .then(function(r){ return r.json(); })
+      .then(function(d){ var p=(d&&d.prefs)||{}; return Object.prototype.hasOwnProperty.call(p,KEY)? String(p[KEY]) : null; })
+      .catch(function(){ try{ return localStorage.getItem(KEY); }catch(e){ return null; } });
+  }
+  load().then(function(v){
+    apply(v===null || v===undefined ? true : v==='1', false);
+  });
+  el.addEventListener('click', function(){ apply(!el.classList.contains('is-on'), true); });
+})();
+</script>
+</body>
+</html>

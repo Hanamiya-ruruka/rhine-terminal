@@ -1,0 +1,12 @@
+#rhine-rotate-hit {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: var(--rhine-rotate-diameter, 0px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  clip-path: circle(50%);
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  cursor: pointer;
+}

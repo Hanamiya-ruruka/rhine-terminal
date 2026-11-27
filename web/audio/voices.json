@@ -1,0 +1,146 @@
+{
+  "_note": "TTS 与音效的清单。整批重生成语音后，只要把这里的文件名换掉即可，代码不用动。key 与触发点见 docs/tts-slots.md。",
+  "version": 1,
+  "voices": {
+    "pen": [
+      "boot_pen.wav"
+    ],
+    "boot": [
+      "boot_end.wav"
+    ],
+    "panel1": [
+      "panel1.wav"
+    ],
+    "panel2": [
+      "panel2.wav"
+    ],
+    "panel3": [
+      "panel3.wav"
+    ],
+    "daily1": [
+      "daily_on1.wav"
+    ],
+    "daily2": [
+      "daily_on2.wav"
+    ],
+    "dailyoff1": [
+      "daily_off1.wav"
+    ],
+    "dailyoff2": [
+      "daily_off2.wav"
+    ],
+    "launch1": [
+      "launch1.wav"
+    ],
+    "launch2": [
+      "launch2.wav"
+    ],
+    "exit": [
+      "exit.wav"
+    ],
+    "holdVoice": [
+      "hold_voice.wav"
+    ],
+    "returnVoice": [
+      "return_voice.wav"
+    ],
+    "morphTimed": [
+      "morph_timed.wav"
+    ],
+    "morphLedger": [
+      "morph_ledger.wav"
+    ],
+    "morphDaily": [
+      "morph_daily.wav"
+    ],
+    "timedFault": [
+      "timed_fault.wav"
+    ],
+    "timedSync": [
+      "timed_sync.wav"
+    ],
+    "ledgerRecord": [
+      "ledger_record.wav"
+    ]
+  },
+  "sfx": {
+    "panelOpen": [
+      "panel_open.wav"
+    ],
+    "panelClose": [
+      "panel_close.wav"
+    ],
+    "launchCue": [
+      "launch_cue.wav"
+    ],
+    "dailyOk": [
+      "daily_ok.wav"
+    ],
+    "dailyUndo": [
+      "daily_undo.wav"
+    ],
+    "ringPulse": [
+      "ring_pulse.wav"
+    ],
+    "errorBraam": [
+      "error_braam.wav"
+    ],
+    "holdPulse": [
+      "hold_pulse.wav"
+    ],
+    "bootUnlock": [
+      "boot_unlock.wav"
+    ],
+    "bootBlade": [
+      "boot_blade.wav"
+    ],
+    "bootAssemble": [
+      "boot_assemble.wav"
+    ],
+    "morphHold": [
+      "morph_hold.wav"
+    ],
+    "morphToTurbine": [
+      "morph_to_turbine.wav"
+    ],
+    "morphToDna": [
+      "morph_to_dna.wav"
+    ],
+    "morphToMobius": [
+      "morph_to_mobius.wav"
+    ],
+    "morphLock": [
+      "morph_lock.wav"
+    ],
+    "uiClick": [
+      "ui_click.wav"
+    ],
+    "uiToggle": [
+      "ui_toggle.wav"
+    ],
+    "uiConfirm": [
+      "ui_confirm.wav"
+    ],
+    "uiAlert": [
+      "ui_alert.wav"
+    ]
+  },
+  "pending": {
+    "_note": "待录入的槽位：录完把文件放进 web/，再把 key 从 pending 挪到 voices 即可。",
+    "err_arrive": [
+      "err_arrive.wav"
+    ],
+    "err_record1": [
+      "err_record1.wav"
+    ],
+    "err_record2": [
+      "err_record2.wav"
+    ],
+    "err_edit1": [
+      "err_edit1.wav"
+    ],
+    "err_edit2": [
+      "err_edit2.wav"
+    ]
+  }
+}

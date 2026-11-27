@@ -1,0 +1,24 @@
+# 构建产物
+/RhineTerminal.exe
+/*.dll
+/compile.log
+/buildcompile.log
+/build/build.txt
+/build/wv2.nupkg
+
+# 运行时数据（在 %LOCALAPPDATA%，不入库）
+/data/
+
+# 构建产物
+/Personal G Rhine Terminal.exe
+/RhineTerminal.exe
+*.exe
+!tools/**/*.exe
+
+# watcher 写出的运行时数据（非源码）
+/web/data/
+
+# auto-daily 计时器运行时数据（非源码，由 watcher 写）
+/tools/auto-daily/data/
+/tools/auto-daily/logs/
+/tools/auto-daily/__pycache__/

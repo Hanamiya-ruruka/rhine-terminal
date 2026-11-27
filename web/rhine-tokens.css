@@ -1,0 +1,97 @@
+/* 莱茵生命风 UI —— 权威变量块（rhine-lab-ui-v3） */
+.rhine-ui {
+  --denied: 0;
+
+  --orange: #ff7b00;
+  --orange-deep: #e35d00;
+  --lime: #b9e432;
+  --crimson: #b81c1c;
+
+  --paper: color-mix(in srgb, #e7e5e1, #0b0b0c calc(var(--denied) * 100%));
+  --ink: color-mix(in srgb, #111214, #f2f0eb calc(var(--denied) * 100%));
+  --ink-inverse: color-mix(in srgb, #f2f0eb, #111214 calc(var(--denied) * 100%));
+  --mute: color-mix(in srgb, #8b8882, #6f6d68 calc(var(--denied) * 100%));
+  --faint: color-mix(in srgb, #c9c6c0, #2b2b2d calc(var(--denied) * 100%));
+  --card: color-mix(in srgb, #f6f5f2, #151618 calc(var(--denied) * 100%));
+  --tab: color-mix(in srgb, #e2e0dc, #1d1e20 calc(var(--denied) * 100%));
+
+  --accent: color-mix(in srgb, var(--lime), var(--orange) calc(var(--denied) * 100%));
+
+  --display: "Montserrat", "MiSans", "Noto Sans CJK SC", sans-serif;
+  --mono: "JetBrains Mono", "JetBrains Mono NF", Consolas, monospace;
+  --cjk: "MiSans", "Source Han Sans CN", "Noto Sans CJK SC", "Noto Sans SC", "Microsoft YaHei UI", sans-serif;
+
+  --lift-1: 0 10px 26px -10px rgba(44, 36, 24, 0.30);
+  --lift-2: 0 6px 18px -6px rgba(44, 36, 24, 0.16);
+  --lift-3: 10px 18px 46px rgba(59, 50, 38, 0.22);
+  --lift-dark: 0 14px 36px -12px rgba(0, 0, 0, 0.72);
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-shake: cubic-bezier(0.36, 0.07, 0.19, 0.97);
+
+  /* OS 外框统一锚点与字阶下限（三视图共享坐标、标题、时钟与微排版标尺） */
+  --os-pad-x: 24px;
+  --os-pad-top: 18px;
+  --os-brand-size: clamp(22px, 1.55vw, 28px);
+  --os-clock-size: clamp(44px, 3.1vw, 56px);
+  --os-clock-sec: 13.5px;
+  --os-clock-meta: 10px;
+  --os-ribbon-h: 3px;
+  --text-micro: 10px;
+  --text-zh-min: 11px;
+
+  color: var(--ink);
+  background: var(--paper);
+  font-family: var(--display);
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+.rhine-ui :where(button, input, select, textarea) {
+  border-radius: 0;
+  font: inherit;
+  color: inherit;
+}
+
+.rhine-ui :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.rhine-ui .rh-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+
+.rhine-ui .rh-code {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+.rhine-ui .rh-kicker {
+  display: inline-block;
+  padding: 0.18em 0.55em;
+  background: var(--ink);
+  color: var(--ink-inverse);
+  border-radius: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.rhine-ui .rh-card {
+  background: var(--card);
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  box-shadow: var(--lift-1);
+}
+
+.rhine-ui .rh-hairline {
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+}
